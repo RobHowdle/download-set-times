@@ -25,7 +25,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
 				// Initialize sidebar functionality if this is the sidebar component
 				if (file.includes("sidebar-menu")) {
-					initSidebarDecorations();
+					initSidebarDecorations && initSidebarDecorations();
+					// Dynamically import and initialize sidebar-menu.js
+					import("./sidebar-menu.js").then((mod) => {
+						if (mod && typeof mod.initSidebarMenu === "function") {
+							mod.initSidebarMenu();
+						}
+					});
 				}
 
 				// Dispatch an event when the component is loaded

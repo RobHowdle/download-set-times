@@ -1055,43 +1055,18 @@
 		});
 
 		document.addEventListener("generateWallpaper", function () {
-			const wallpaperBtn = document.querySelector(
-				"[data-action='generate-wallpaper']"
-			);
-			if (wallpaperBtn) {
-				wallpaperBtn.click();
+			if (typeof window.showDaySelectionModal === "function") {
+				window.showDaySelectionModal();
 			} else {
-				console.warn("Wallpaper Generator button not found in DOM.");
-			}
-		});
-
-		// Add this handler to trigger the wallpaper modal
-		document.addEventListener("DOMContentLoaded", function () {
-			const wallpaperBtn = document.querySelector(
-				"[data-action='generate-wallpaper']"
-			);
-			if (wallpaperBtn) {
-				wallpaperBtn.addEventListener("click", function (e) {
-					if (typeof window.showDaySelectionModal === "function") {
-						window.showDaySelectionModal();
-					} else {
-						console.warn(
-							"showDaySelectionModal function not found."
-						);
-					}
-				});
+				console.warn("showDaySelectionModal function not found.");
 			}
 		});
 
 		document.addEventListener("generatePoster", function () {
-			// This should trigger whatever function handles poster generation
-			const posterBtn = document.querySelector(
-				"[data-action='generate-poster']"
-			);
-			if (posterBtn) {
-				posterBtn.click();
+			if (typeof window.generatePersonalizedPoster === "function") {
+				window.generatePersonalizedPoster();
 			} else {
-				console.warn("Poster Generator button not found in DOM.");
+				console.warn("generatePersonalizedPoster function not found.");
 			}
 		});
 

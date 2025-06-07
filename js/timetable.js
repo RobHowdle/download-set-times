@@ -166,7 +166,12 @@ export function showDaySelectionModal() {
 	closeButton.className =
 		"mt-6 px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-500 transition";
 	closeButton.innerText = "Close";
-	closeButton.onclick = () => modal.remove();
+	closeButton.onclick = () => {
+		// Remove all day-selection-modal overlays if more than one exists
+		document
+			.querySelectorAll("#day-selection-modal")
+			.forEach((el) => el.remove());
+	};
 	buttonGroup.appendChild(closeButton);
 
 	// Assemble the modal

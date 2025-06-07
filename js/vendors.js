@@ -650,14 +650,18 @@ function showVendorModal(vendor) {
           ${formatLocation(vendor.location)}
         </span>
         <span class="inline-block px-2 py-1 bg-cyan-800 text-xs rounded">
-          ${vendor.type.charAt(0).toUpperCase() + vendor.type.slice(1)}
+          ${
+				Array.isArray(vendor.type)
+					? vendor.type.join(", ")
+					: vendor.type.charAt(0).toUpperCase() + vendor.type.slice(1)
+			}
         </span>
       </div>
       <p class="text-gray-300">${vendor.description}</p>
     </div>
   `;
 
-	// --- CHANGE: Show all categories as "Categories" ---
+	// --- FIX: Show all categories as "Categories" ---
 	if (vendor.category && vendor.category.length > 0) {
 		contentHTML += `
       <div class="mb-4">

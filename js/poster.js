@@ -43,7 +43,10 @@ export function generatePersonalizedPoster() {
 	// Create name input popup
 	showNameInputDialog().then((name) => {
 		// Use the name (or default) to create the poster
-		createPersonalizedPoster(name || "My");
+		if (name && name.trim()) {
+			createPersonalizedPoster(name || "My");
+		}
+		// If name is null or empty, do nothing (cancelled)
 	});
 
 	// When creating the modal container, add the poster-modal class:
@@ -109,24 +112,48 @@ function showNameInputDialog() {
 		const buttonGroup = document.createElement("div");
 		buttonGroup.className = "flex space-x-4 justify-center";
 
+		// Add Skip button
 		const skipButton = document.createElement("button");
 		skipButton.className =
-			"px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-500 transition";
+			"px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-400 transition ml-2";
 		skipButton.innerText = "Skip";
 		skipButton.onclick = () => {
-			modal.remove();
-			resolve("");
+			// Remove all name input modals if present
+			document
+				.querySelectorAll("#name-input-modal")
+				.forEach((el) => el.remove());
+			resolve("My"); // Use default name
 		};
+		buttonGroup.appendChild(skipButton);
 
+		// Add Continue button
 		const confirmButton = document.createElement("button");
 		confirmButton.className =
-			"px-4 py-2 bg-cyan-600 text-white rounded hover:bg-cyan-500 transition";
+			"px-4 py-2 bg-cyan-600 text-white rounded hover:bg-cyan-500 transition ml-2";
 		confirmButton.innerText = "Continue";
 		confirmButton.onclick = () => {
 			const name = input.value.trim();
-			modal.remove();
-			resolve(name);
+			// Remove all name input modals if present
+			document
+				.querySelectorAll("#name-input-modal")
+				.forEach((el) => el.remove());
+			resolve(name || "My"); // Use entered name or default
 		};
+		buttonGroup.appendChild(confirmButton);
+
+		// Add Cancel button
+		const cancelButton = document.createElement("button");
+		cancelButton.className =
+			"px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-500 transition ml-2";
+		cancelButton.innerText = "Cancel";
+		cancelButton.onclick = () => {
+			// Remove all name input modals if present
+			document
+				.querySelectorAll("#name-input-modal")
+				.forEach((el) => el.remove());
+			resolve(null); // Cancel
+		};
+		buttonGroup.appendChild(cancelButton);
 
 		// Add keyboard event listener
 		input.addEventListener("keyup", (event) => {
@@ -139,9 +166,6 @@ function showNameInputDialog() {
 		setTimeout(() => input.focus(), 100);
 
 		// Assemble the modal
-		buttonGroup.appendChild(skipButton);
-		buttonGroup.appendChild(confirmButton);
-
 		container.appendChild(title);
 		container.appendChild(inputWrapper);
 		container.appendChild(buttonGroup);
@@ -207,7 +231,12 @@ function createPersonalizedPoster(name) {
 	closeBtn.innerHTML = "×";
 	closeBtn.className =
 		"absolute top-2 right-4 text-white text-3xl hover:text-gray-400 z-10";
-	closeBtn.onclick = () => document.getElementById("poster-modal").remove();
+	closeBtn.onclick = () => {
+		// Remove all poster modals and name input modals if present
+		document
+			.querySelectorAll("#poster-modal, #name-input-modal")
+			.forEach((el) => el.remove());
+	};
 
 	// Sort artists by venue and headliner status
 	const arenaArtists = collectArenaArtists();
@@ -254,12 +283,24 @@ function createPersonalizedPoster(name) {
 		"fixed bottom-6 left-0 right-0 flex justify-center z-50";
 	downloadContainer.appendChild(downloadBtn);
 
+	// Add a secondary close button at the bottom for accessibility
+	const bottomCloseBtn = document.createElement("button");
+	bottomCloseBtn.className =
+		"mt-6 px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-500 transition";
+	bottomCloseBtn.innerText = "Close";
+	bottomCloseBtn.onclick = () => {
+		document
+			.querySelectorAll("#poster-modal, #name-input-modal")
+			.forEach((el) => el.remove());
+	};
+
 	// Add everything to the DOM
 	posterContainer.appendChild(closeBtn);
 	posterContainer.appendChild(posterContent);
 	posterContainer.appendChild(downloadBtn);
 	modal.appendChild(posterContainer);
 	modal.appendChild(downloadContainer);
+	modal.appendChild(bottomCloseBtn);
 	document.body.appendChild(modal);
 }
 
