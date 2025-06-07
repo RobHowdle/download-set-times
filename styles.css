@@ -33,6 +33,58 @@
     margin-bottom: 0.25rem;
   }
 
+  /* Now PLaying and Upnext */
+
+  .last-updated {
+    text-align: right;
+    font-size: 0.9em;
+    color: #777;
+    margin-top: 20px;
+}
+
+#stagesContainer {
+    display: flex;
+    flex-wrap: wrap; /* Allows sections to wrap to the next line */
+    gap: 20px; /* Space between stage sections */
+    justify-content: center; /* Center the stage sections */
+}
+
+.stage-section {
+    flex: 1; /* Allow sections to grow and shrink */
+    min-width: 280px; /* Minimum width before wrapping */
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    background-color: #00535375;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.stage-section h2 {
+    text-align: center;
+    color: #0056b3;
+    margin-top: 0;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #0056b3;
+}
+
+.stage-section h3 {
+    color: #555;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    font-size: 1.1em;
+}
+
+.stage-info p {
+    margin: 5px 0;
+    font-size: 0.95em;
+}
+
+.stage-info span {
+    font-weight: bold;
+    color: #be2a2a;
+}
+
   /* ============================================
    SLIDE-OUT MENU
    ============================================ */
@@ -48,6 +100,7 @@
     transition: opacity 0.3s ease;
     z-index: 40;
   }
+  
   
   .index-only {
     display: none;
@@ -518,7 +571,7 @@
       align-items: center;
       color: #fff;
     }
-
+    
     /* Individual Units */
     .timer-unit {
       display: flex;
@@ -647,25 +700,7 @@
      TIMETABLE GENERATOR
      ============================================ */
 
-.timetable-capture-area {
-    position: absolute;
-    left: -9999px;
-    top: -9999px;
-    z-index: -1;
-    background-color: #000000;
-    background-image: url('assets/timetable_background2.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    padding: 0;
-    box-sizing: border-box;
-    color: #06b6d4;
-    overflow: hidden; /* Initial state, will be visible for measurement */
-
-    /* Define a BASE font size that will be scaled dynamically by JS */
-    font-size: 30px; /* This will be the base for all em units when no scale applied */
-    /* REMOVE any transform properties here */
-}
+/* REMOVED - See consolidated style at the bottom of the file */
 
 /* Add style for the top spacing element */
 .top-spacer {
@@ -1159,7 +1194,12 @@
     align-items: center;
     gap: 1rem;
     padding: 1rem;
-    background: #18181b;
+
+  }
+  .vendors-page header {
+      background: none;
+      box-shadow: none;
+      border: none;
   }
   /* #open-map-btn {
     background: #06b6d4;
@@ -1252,100 +1292,9 @@
     stroke-width: 2 !important;
   }
 
-  @media (max-width: 767px) {
-  .header-flex {
-    flex-direction: column !important;
-    align-items: center !important;
-    gap: 0.5rem !important;
-  }
-  .header-logo {
-    margin-bottom: 0.5rem !important;
-    width: 100%;
-    text-align: center;
-  }
-  .timer-container {
-    width: 100%;
-    justify-content: center;
-    margin-bottom: 0.5rem;
-    order: 2;
-  }
-  .header-buttons {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    gap: 0.5rem;
-    margin-bottom: 0.5rem;
-    order: 3;
-  }
-  .header-title {
-    order: 1;
-  }
-}
+  /* Mobile layout rules removed - using Tailwind classes instead */
 
-.header-flex {
-  flex-direction: column;
-  align-items: stretch;
-  gap: 0.5rem;
-}
-
-.header-logo {
-  justify-content: center;
-  width: 100%;
-  margin-bottom: 0.25rem;
-}
-
-.timer-container {
-  display: flex;
-  justify-content: center;
-  gap: 1.5rem;
-  width: 100%;
-  margin-bottom: 0.25rem;
-}
-
-.header-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  width: 100%;
-  align-items: center;
-}
-
-.header-buttons > button {
-  width: 100%;
-  min-width: 0;
-  justify-content: center;
-}
-
-@media (min-width: 640px) {
-  .header-flex {
-    flex-direction: row;
-    align-items: center;
-    gap: 0.5rem;
-    justify-content: space-between;
-  }
-  .header-logo {
-    justify-content: flex-start;
-    width: auto;
-    margin-bottom: 0;
-  }
-  .timer-container {
-    justify-content: center;
-    margin: 0 auto;
-    width: auto;
-  }
-  .header-buttons {
-    flex-direction: row;
-    align-items: center;
-    gap: 0.5rem;
-    width: auto;
-  }
-  .header-buttons > button {
-    width: auto;
-    min-width: 120px;
-    justify-content: center;
-  }
-}
+/* CSS rules simplified - using Tailwind responsive classes instead */
 
 /* List view: highlight favorite sets */
 .favorite-list-item {
@@ -1367,6 +1316,43 @@
 
 .favorite-list-item .text-pink-400 {
   color: #f472b6 !important;
+}
+
+/* ============================================
+   TIMETABLE WALLPAPER GENERATION
+   ============================================ */
+.timetable-capture-area {
+  position: absolute;
+  left: -9999px;
+  top: -9999px;
+  z-index: -999;
+  background-color: #000000;
+  background-image: url('assets/timetable_background2.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 20px;
+  box-sizing: border-box;
+  color: #06b6d4;
+  overflow: hidden;
+  font-size: 30px;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Ensure content within capture area is visible when the area is active */
+.timetable-capture-area * {
+  color: #06b6d4 !important;
+  visibility: inherit !important;
+}
+
+/* Make sure text content is properly styled */
+.timetable-capture-area .day-heading,
+.timetable-capture-area .stage-section h3,
+.timetable-capture-area .artist-entry {
+  color: #06b6d4 !important;
+  text-shadow: 0 0 15px rgba(255, 255, 255, 0.7) !important;
 }
 
 /* ============================================
@@ -1396,4 +1382,418 @@
 .menu-item:focus {
   outline: 2px solid #06b6d4;
   outline-offset: -2px;
+}
+
+/* ============================================
+   MOBILE RESPONSIVE NAVIGATION
+   ============================================ */
+/* Timer unit border for all sizes */
+.timer-unit:not(:last-child) {
+  border-right: 1px solid #0891B2;
+}
+
+/* Mobile-first navigation layout */
+@media (max-width: 640px) {
+  .timer-unit {
+    padding: 0 12px;
+  }
+  
+  .timer-number {
+    font-size: 1.25em;
+  }
+  
+  .timer-label {
+    font-size: 0.7em;
+  }
+}
+
+/* Very small screens */
+@media (max-width: 480px) {
+  .timer-unit {
+    padding: 0 8px;
+  }
+  
+  .timer-number {
+    font-size: 1.1em;
+  }
+  
+  .timer-label {
+    font-size: 0.65em;
+  }
+}
+
+/* Tablet and up improvements */
+@media (min-width: 641px) {
+  .timer-unit {
+    padding: 0 24px;
+  }
+  
+  .timer-number {
+    font-size: 1.75em;
+  }
+  
+  .timer-label {
+    font-size: 0.9em;
+  }
+}
+
+/* ============================================
+   ENHANCED MOBILE RESPONSIVE DESIGN
+   ============================================ */
+
+/* Global mobile improvements */
+@media (max-width: 768px) {
+  /* Ensure proper touch targets */
+  button, .menu-item, .day-btn, .stage-btn {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Improve button spacing on mobile */
+  .day-btn, .stage-btn {
+    font-size: 0.875rem;
+    padding: 8px 12px;
+  }
+  
+  /* Better content spacing */
+  .container, .mx-auto {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  /* Improve dropdown visibility */
+  select {
+    font-size: 16px; /* Prevent zoom on iOS */
+    min-height: 44px;
+  }
+}
+
+/* Mobile-specific weather section improvements */
+@media (max-width: 640px) {
+  .weather-container {
+    margin-bottom: 1rem;
+    padding: 1rem;
+  }
+  
+  #weather-forecast {
+    gap: 0.75rem;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  .weather-card {
+    min-width: auto;
+    width: calc(50% - 0.75rem);
+    font-size: 0.875rem;
+  }
+}
+
+/* Extra small screens - make sure cards have some minimum width */
+@media (max-width: 360px) {
+  #weather-forecast {
+    gap: 0.5rem;
+  }
+  
+  .weather-card {
+    width: calc(50% - 0.5rem);
+    padding: 0.75rem;
+  }
+}
+
+/* Mobile timetable improvements */
+@media (max-width: 768px) {
+  /* Better horizontal scroll for timetables */
+  .overflow-x-auto {
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: #06b6d4 transparent;
+  }
+  
+  .overflow-x-auto::-webkit-scrollbar {
+    height: 4px;
+  }
+  
+  .overflow-x-auto::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+  }
+  
+  .overflow-x-auto::-webkit-scrollbar-thumb {
+    background: #06b6d4;
+    border-radius: 2px;
+  }
+  
+  /* Improve stage name visibility on mobile */
+  .stage-name {
+    font-size: 0.75rem !important;
+    padding: 0.25rem !important;
+    line-height: 1.2;
+  }
+  
+  /* Better event card styling on mobile */
+  .event-item {
+    min-height: 40px;
+    font-size: 0.875rem;
+    padding: 0.5rem;
+  }
+}
+
+/* Mobile modal improvements */
+@media (max-width: 640px) {
+  .fixed.inset-0 > div {
+    margin: 1rem;
+    max-height: calc(100vh - 2rem);
+    width: calc(100% - 2rem);
+  }
+  
+  /* Better modal headers */
+  .modal h2 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+  
+  /* Improve favorite artist modal on mobile */
+  #favorites-modal .bg-gray-800 {
+    padding: 1rem;
+    border-radius: 0.5rem;
+  }
+  
+  .day-tab {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+  }
+}
+
+/* Map page mobile improvements */
+@media (max-width: 768px) {
+  .map-container {
+    height: 60vh;
+    border-radius: 0.5rem;
+  }
+  
+  .zoom-controls {
+    top: 8px;
+    right: 8px;
+    gap: 4px;
+  }
+  
+  .zoom-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+  }
+  
+  .map-legend {
+    padding: 1rem;
+    font-size: 0.875rem;
+  }
+  
+  .legend-item {
+    margin: 0.25rem 0;
+  }
+  
+  .legend-color {
+    width: 12px;
+    height: 12px;
+  }
+  
+  /* Better ticket selector on mobile */
+  #ticket-type-select {
+    width: 100% !important;
+    font-size: 16px;
+  }
+}
+
+/* Vendors page mobile improvements */
+@media (max-width: 640px) {
+  .zone-selector {
+    gap: 1rem;
+    max-width: 100%;
+    padding: 0 1rem;
+  }
+  
+  .zone-bubble {
+    width: 120px;
+    height: 120px;
+  }
+  
+  .zone-text {
+    font-size: 1rem;
+    padding: 0.75rem 1rem;
+  }
+  
+  .category-bubble {
+    width: 120px;
+    height: 120px;
+    font-size: 0.8rem;
+  }
+  
+  .vendor-bubble {
+    width: 90px;
+    height: 90px;
+    font-size: 0.7rem;
+  }
+  
+  .back-button {
+    top: 80px;
+    left: 1rem;
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* Very small screens (mobile portrait) */
+@media (max-width: 480px) {
+  /* Reduce padding for more space */
+  body {
+    padding: 0.75rem;
+  }
+  
+  /* Compact header */
+  header {
+    margin-bottom: 1rem;
+  }
+  
+  /* Better logo sizing */
+  header img {
+    height: 1.75rem;
+  }
+  
+  /* More compact menu button */
+  #menu-toggle-btn {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+  }
+  
+  /* Smaller section headers */
+  h2 {
+    font-size: 1.125rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  /* Compact dropdowns */
+  .relative.inline-block.text-left.w-full {
+    margin-bottom: 0.75rem;
+  }
+  
+  /* Better touch targets for dropdown buttons */
+  #stage-dropdown-btn-mobile,
+  #day-dropdown-btn-mobile,
+  #districtx-stage-dropdown-btn-mobile,
+  #districtx-day-dropdown-btn-mobile {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+  }
+}
+
+/* Landscape mobile optimization */
+@media (max-width: 896px) and (orientation: landscape) {
+  /* Reduce vertical spacing in landscape */
+  header {
+    margin-bottom: 0.5rem;
+  }
+  
+  /* More compact weather section */
+  .weather-container {
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  /* Smaller section spacing */
+  .mb-8 {
+    margin-bottom: 1rem;
+  }
+  
+  .mt-12 {
+    margin-top: 1.5rem;
+  }
+}
+
+/* Improved switch component for mobile */
+@media (max-width: 640px) {
+  .switch {
+    width: 44px;
+    height: 24px;
+  }
+  
+  .switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 24px;
+  }
+  
+  .slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+  }
+  
+  input:checked + .slider {
+    background-color: #06b6d4;
+  }
+  
+  input:checked + .slider:before {
+    transform: translateX(20px);
+  }
+}
+
+/* Share button improvements for mobile */
+@media (max-width: 640px) {
+  #share-favorites-btn {
+    bottom: 1rem;
+    right: 1rem;
+    padding: 0.75rem;
+    font-size: 0.875rem;
+  }
+  
+  #share-favorites-btn span {
+    display: none;
+  }
+}
+
+/* Accessibility improvements for mobile */
+@media (max-width: 768px) {
+  /* Ensure focus states are visible */
+  button:focus,
+  a:focus,
+  select:focus {
+    outline: 2px solid #06b6d4;
+    outline-offset: 2px;
+  }
+  
+  /* Better contrast for text */
+  .text-gray-400 {
+    color: #d1d5db;
+  }
+  
+  /* Remove hover effects on touch devices */
+  @media (hover: none) {
+    .hover\\:bg-cyan-600:hover {
+      background-color: inherit;
+    }
+    
+    .hover\\:text-white:hover {
+      color: inherit;
+    }
+  }
 }

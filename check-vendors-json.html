@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Vendor Data Checker</title>
+		<style>
+			body {
+				font-family: Arial, sans-serif;
+				margin: 0;
+				padding: 20px;
+				background-color: #1a1a1a;
+				color: #fff;
+			}
+			.container {
+				max-width: 800px;
+				margin: 0 auto;
+			}
+			.results {
+				background-color: #2a2a2a;
+				border-radius: 4px;
+				padding: 20px;
+				margin-top: 20px;
+				white-space: pre-wrap;
+				font-family: monospace;
+			}
+			button {
+				background-color: #4caf50;
+				border: none;
+				color: white;
+				padding: 10px 15px;
+				text-align: center;
+				display: inline-block;
+				font-size: 16px;
+				margin: 4px 2px;
+				cursor: pointer;
+				border-radius: 4px;
+			}
+			button:hover {
+				background-color: #45a049;
+			}
+			.error {
+				color: #ff6b6b;
+			}
+			.success {
+				color: #4caf50;
+			}
+			.loading {
+				display: inline-block;
+				width: 20px;
+				height: 20px;
+				border: 3px solid rgba(255, 255, 255, 0.3);
+				border-radius: 50%;
+				border-top-color: #fff;
+				animation: spin 1s ease-in-out infinite;
+			}
+			@keyframes spin {
+				to {
+					transform: rotate(360deg);
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<h1>Vendor Data JSON Checker</h1>
+			<p>
+				This tool tests access to vendors-data.json file from different
+				paths and validates the JSON structure.
+			</p>
+
+			<button id="checkButton">Check vendors-data.json</button>
+
+			<div class="results" id="results">
+				Click the button above to test access to vendors-data.json
+			</div>
+		</div>
+
+		<script>
+			document
+				.getElementById("checkButton")
+				.addEventListener("click", async () => {
+					const resultsDiv = document.getElementById("results");
+					resultsDiv.innerHTML =
+						'<div class="loading"></div> Testing access to vendors-data.json...';
+
+					// Paths to test
+					const paths = [
+						"vendors-data.json",
+						"./vendors-data.json",
+						"/vendors-data.json",
+						window.location.origin + "/vendors-data.json",
+						"../vendors-data.json",
+					];
+
+					let results = "";
+
+					// Test each path
+					for (const path of paths) {
+						results += `Testing: ${path}\n`;
+						try {
+							const startTime = performance.now();
+							const response = await fetch(path);
+							const endTime = performance.now();
+							const timeElapsed = Math.round(endTime - startTime);
+
+							if (response.ok) {
+								results += `✅ Status: ${response.status} OK (${timeElapsed}ms)\n`;
+
+								try {
+									const text = await response.text();
+									results += `   Size: ${text.length} bytes\n`;
+
+									try {
+										const data = JSON.parse(text);
+										results +=
+											'   <span class="success">✓ Valid JSON format</span>\n';
+
+										// Check structure
+										if (data.zones) {
+											const zoneCount = Object.keys(
+												data.zones
+											).length;
+											results += `   <span class="success">✓ Found ${zoneCount} zones</span>\n`;
+
+											// Count vendors
+											let vendorCount = 0;
+											for (const zone in data.zones) {
+												if (data.zones[zone].vendors) {
+													vendorCount +=
+														data.zones[zone].vendors
+															.length;
+												}
+											}
+											results += `   <span class="success">✓ Found ${vendorCount} vendors</span>\n`;
+										} else {
+											results +=
+												'   <span class="error">✗ Missing "zones" property</span>\n';
+										}
+									} catch (e) {
+										results += `   <span class="error">✗ Invalid JSON: ${e.message}</span>\n`;
+										results += `   First 100 chars: ${text
+											.substring(0, 100)
+											.replace(/\n/g, "\\n")}</span>\n`;
+									}
+								} catch (e) {
+									results += `   <span class="error">✗ Failed to read response text: ${e.message}</span>\n`;
+								}
+							} else {
+								results += `<span class="error">✗ Failed with status: ${response.status} (${timeElapsed}ms)</span>\n`;
+							}
+						} catch (error) {
+							results += `<span class="error">✗ Error: ${error.message}</span>\n`;
+						}
+
+						results += "\n";
+					}
+
+					// Check file using XMLHttpRequest
+					results += "Testing with XMLHttpRequest:\n";
+					try {
+						const xhr = new XMLHttpRequest();
+						xhr.open("GET", "vendors-data.json", false); // Synchronous for simplicity
+						xhr.send();
+
+						if (xhr.status >= 200 && xhr.status < 300) {
+							results += `✅ Status: ${xhr.status} OK\n`;
+							results += `   Size: ${xhr.responseText.length} bytes\n`;
+
+							try {
+								const data = JSON.parse(xhr.responseText);
+								results +=
+									'   <span class="success">✓ Valid JSON format</span>\n';
+							} catch (e) {
+								results += `   <span class="error">✗ Invalid JSON: ${e.message}</span>\n`;
+							}
+						} else {
+							results += `<span class="error">✗ Failed with status: ${xhr.status}</span>\n`;
+						}
+					} catch (error) {
+						results += `<span class="error">✗ Error: ${error.message}</span>\n`;
+					}
+
+					resultsDiv.innerHTML = results;
+				});
+		</script>
+	</body>
+</html>

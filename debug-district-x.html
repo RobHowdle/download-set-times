@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Debug District X</title>
+	</head>
+	<body>
+		<h1>Debug District X Zone</h1>
+		<div id="output"></div>
+
+		<script>
+			async function debugDistrictX() {
+				try {
+					const response = await fetch("vendors-data.json");
+					const vendorsData = await response.json();
+
+					console.log("Full data structure:", vendorsData);
+					console.log(
+						"Available zones:",
+						Object.keys(vendorsData.zones || {})
+					);
+
+					const districtXVendors =
+						vendorsData.zones["District X"]?.vendors || [];
+					console.log(
+						"District X vendors count:",
+						districtXVendors.length
+					);
+					console.log("District X vendors:", districtXVendors);
+
+					// Get unique categories based on tags
+					const categories = new Set();
+
+					districtXVendors.forEach((vendor) => {
+						console.log(
+							"Processing vendor:",
+							vendor.name,
+							"with tags:",
+							vendor.tags
+						);
+						if (vendor.tags) {
+							vendor.tags.forEach((tag) => {
+								console.log("Checking tag:", tag);
+								// Convert tags to categories for filtering
+								if (
+									[
+										"Halal",
+										"Vegan",
+										"Vegetarian",
+										"GF_Free",
+										"Coeliac_friendly",
+										"Cheap",
+									].includes(tag)
+								) {
+									console.log("Adding category:", tag);
+									categories.add(tag);
+								}
+							});
+						}
+					});
+
+					// Add default categories if there are vendors
+					if (districtXVendors.length > 0) {
+						categories.add("All");
+					}
+
+					console.log(
+						"Final categories found:",
+						Array.from(categories)
+					);
+
+					// Display results
+					document.getElementById("output").innerHTML = `
+                    <p><strong>District X Vendors:</strong> ${
+						districtXVendors.length
+					}</p>
+                    <p><strong>Categories found:</strong> ${Array.from(
+						categories
+					).join(", ")}</p>
+                    <h3>Vendors with dietary tags:</h3>
+                    <ul>
+                        ${districtXVendors
+							.filter((v) =>
+								v.tags.some((tag) =>
+									[
+										"Halal",
+										"Vegan",
+										"Vegetarian",
+										"GF_Free",
+										"Cheap",
+									].includes(tag)
+								)
+							)
+							.map(
+								(v) =>
+									`<li>${v.name}: ${v.tags
+										.filter((tag) =>
+											[
+												"Halal",
+												"Vegan",
+												"Vegetarian",
+												"GF_Free",
+												"Cheap",
+											].includes(tag)
+										)
+										.join(", ")}</li>`
+							)
+							.join("")}
+                    </ul>
+                `;
+				} catch (error) {
+					console.error("Error:", error);
+					document.getElementById(
+						"output"
+					).innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+				}
+			}
+
+			debugDistrictX();
+		</script>
+	</body>
+</html>

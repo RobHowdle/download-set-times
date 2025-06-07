@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Download Festival Vendors</title>
+		<script src="https://cdn.tailwindcss.com"></script>
+		<link rel="stylesheet" href="styles.css" />
+		<script type="module" src="js/navigation.js"></script>
+		<style>
+			body {
+				margin: 0;
+				background: linear-gradient(
+						rgba(0, 0, 0, 0.3),
+						rgba(0, 0, 0, 0.4)
+					),
+					url("assets/timetable_background.png") center/cover
+						no-repeat fixed;
+				font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+				color: white;
+				overflow-x: hidden;
+			}
+
+			.location-bubble {
+				width: 180px;
+				height: 180px;
+				border-radius: 50%;
+				background: linear-gradient(135deg, #111 0%, #222 100%);
+				box-shadow: 0 0 20px #00ffc3, 0 0 40px rgba(0, 255, 195, 0.2);
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-size: 1.2rem;
+				font-weight: 700;
+				cursor: pointer;
+				transition: all 0.4s ease;
+				position: relative;
+				overflow: hidden;
+				text-align: center;
+			}
+
+			.location-bubble:hover {
+				transform: scale(1.1);
+				box-shadow: 0 0 40px #00ffc3, 0 0 80px rgba(0, 255, 195, 0.4);
+			}
+
+			/* Arena specific styling */
+			.location-bubble.arena {
+				background: linear-gradient(
+						135deg,
+						rgba(35, 191, 207, 0.1) 0%,
+						rgba(0, 0, 0, 0.2) 50%,
+						rgba(35, 191, 207, 0.1) 100%
+					),
+					url("assets/apex.jpg") center/cover no-repeat;
+				box-shadow: 0 0 20px #23bfcf, 0 0 40px rgba(35, 191, 207, 0.2);
+			}
+
+			.location-bubble.arena:hover {
+				box-shadow: 0 0 40px #23bfcf, 0 0 80px rgba(35, 191, 207, 0.4);
+			}
+
+			/* District X styling */
+			.location-bubble.districtx {
+				background: linear-gradient(
+						135deg,
+						rgba(74, 144, 255, 0.1) 0%,
+						rgba(0, 0, 0, 0.2) 50%,
+						rgba(74, 144, 255, 0.1) 100%
+					),
+					url("assets/districtx.jpg") center/cover no-repeat;
+				box-shadow: 0 0 20px #4a90ff, 0 0 40px rgba(74, 144, 255, 0.2);
+			}
+
+			.location-bubble.districtx:hover {
+				box-shadow: 0 0 40px #4a90ff, 0 0 80px rgba(74, 144, 255, 0.4);
+			}
+
+			/* RIP styling */
+			.location-bubble.rip {
+				background: linear-gradient(
+						135deg,
+						rgba(255, 0, 0, 0.1) 0%,
+						rgba(0, 0, 0, 0.2) 50%,
+						rgba(255, 0, 0, 0.1) 100%
+					),
+					url("assets/rip-logo.png") center/cover no-repeat;
+				box-shadow: 0 0 20px #ff0000, 0 0 40px rgba(255, 0, 0, 0.2);
+			}
+
+			.location-bubble.rip:hover {
+				box-shadow: 0 0 40px #ff0000, 0 0 80px rgba(255, 0, 0, 0.4);
+			}
+
+			/* Plus styling */
+			.location-bubble.plus {
+				background: linear-gradient(
+						135deg,
+						rgba(255, 255, 255, 0.1) 0%,
+						rgba(0, 0, 0, 0.2) 50%,
+						rgba(255, 255, 255, 0.1) 100%
+					),
+					url("assets/plus.jpg") center/cover no-repeat;
+				box-shadow: 0 0 20px #ffffff, 0 0 40px rgba(255, 255, 255, 0.2);
+			}
+
+			.location-bubble.plus:hover {
+				box-shadow: 0 0 40px #ffffff, 0 0 80px rgba(255, 255, 255, 0.4);
+			}
+
+			.bubble-text {
+				background: rgba(0, 0, 0, 0.7);
+				padding: 10px 20px;
+				border-radius: 10px;
+				backdrop-filter: blur(10px);
+				border: 1px solid rgba(0, 255, 195, 0.3);
+				box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+			}
+
+			.tag-pill {
+				background: rgba(0, 0, 0, 0.7);
+				padding: 8px 16px;
+				border-radius: 20px;
+				backdrop-filter: blur(10px);
+				border: 1px solid rgba(0, 255, 195, 0.3);
+				box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+				transition: all 0.3s ease;
+			}
+
+			.tag-pill:hover {
+				transform: scale(1.05);
+				box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+				background: rgba(0, 255, 195, 0.2);
+			}
+
+			.tag-pill.active {
+				background: rgba(0, 255, 195, 0.2);
+				border: 1px solid rgba(0, 255, 195, 0.6);
+				box-shadow: 0 0 20px rgba(0, 255, 195, 0.4);
+			}
+
+			.vendor-card {
+				background: rgba(0, 0, 0, 0.5);
+				border-radius: 10px;
+				backdrop-filter: blur(10px);
+				border: 1px solid rgba(0, 255, 195, 0.2);
+				box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+				transition: all 0.3s ease;
+			}
+
+			.vendor-card:hover {
+				transform: translateY(-5px);
+				box-shadow: 0 12px 48px rgba(0, 0, 0, 0.3);
+				border: 1px solid rgba(0, 255, 195, 0.4);
+			}
+
+			/* Animations */
+			@keyframes fadeIn {
+				from {
+					opacity: 0;
+				}
+				to {
+					opacity: 1;
+				}
+			}
+
+			.fade-in {
+				animation: fadeIn 0.5s ease forwards;
+			}
+
+			/* Vendor Detail Modal */
+			.modal-overlay {
+				background-color: rgba(0, 0, 0, 0.8);
+				backdrop-filter: blur(5px);
+			}
+
+			.modal-content {
+				background: linear-gradient(135deg, #111 0%, #16213e 100%);
+				border: 1px solid rgba(0, 255, 195, 0.3);
+				box-shadow: 0 0 30px rgba(0, 255, 195, 0.2);
+			}
+		</style>
+	</head>
+	<body class="bg-black text-white">
+		<!-- Navigation Component Placeholder -->
+		<div id="navigation-placeholder"></div>
+
+		<div class="container mx-auto px-4 py-8 min-h-screen">
+			<!-- Back Button -->
+			<button
+				id="backButton"
+				class="hidden mb-6 bg-gray-800 hover:bg-gray-700 text-cyan-400 font-bold py-2 px-4 rounded-full flex items-center transition-all duration-300"
+			>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					class="h-5 w-5 mr-2"
+					viewBox="0 0 20 20"
+					fill="currentColor"
+				>
+					<path
+						fill-rule="evenodd"
+						d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z"
+						clip-rule="evenodd"
+					/>
+				</svg>
+				Back
+			</button>
+
+			<!-- Page Title -->
+			<h1 class="text-4xl font-bold text-center mb-8 text-cyan-400">
+				Download Festival Vendors
+			</h1>
+
+			<!-- Loading Indicator -->
+			<div
+				id="loading-indicator"
+				class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50"
+				style="display: none"
+			>
+				<div class="text-center">
+					<div
+						class="inline-block animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-cyan-400 mb-4"
+					></div>
+					<p class="text-cyan-400 text-lg">Loading vendor data...</p>
+				</div>
+			</div>
+
+			<!-- Location Selection (Level 1) -->
+			<div id="locationSelectScreen" class="py-8">
+				<h2 class="text-2xl font-bold text-center mb-6 text-cyan-300">
+					Select Location
+				</h2>
+				<div
+					id="locations-container"
+					class="flex flex-wrap justify-center gap-8"
+				>
+					<!-- Locations will be populated dynamically here -->
+				</div>
+			</div>
+
+			<!-- Tag Selection (Level 2) -->
+			<div id="tagSelectScreen" class="py-8 hidden">
+				<h2 class="text-2xl font-bold text-center mb-6 text-cyan-300">
+					<span id="currentLocation"></span> - Select Category
+				</h2>
+				<div
+					id="tags-container"
+					class="flex flex-wrap justify-center gap-4"
+				>
+					<!-- Tags will be populated dynamically here -->
+				</div>
+			</div>
+
+			<!-- Vendor List (Level 3) -->
+			<div id="vendorListScreen" class="py-8 hidden">
+				<h2 class="text-2xl font-bold text-center mb-6 text-cyan-300">
+					<span id="currentLocationVendors"></span> -
+					<span id="currentTag"></span>
+				</h2>
+				<div
+					id="vendors-container"
+					class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+				>
+					<!-- Vendors will be populated dynamically here -->
+				</div>
+			</div>
+		</div>
+
+		<!-- Vendor Detail Modal -->
+		<div
+			id="vendorModal"
+			class="fixed inset-0 z-50 flex items-center justify-center hidden"
+		>
+			<div class="modal-overlay absolute inset-0"></div>
+			<div
+				class="modal-content relative z-10 rounded-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto m-4"
+			>
+				<div
+					class="sticky top-0 bg-gray-900 bg-opacity-90 p-4 border-b border-gray-700 flex justify-between items-center"
+				>
+					<h2
+						id="modalVendorName"
+						class="text-2xl font-bold text-white"
+					></h2>
+					<button
+						id="closeModal"
+						class="text-gray-400 hover:text-white"
+					>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="h-6 w-6"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M6 18L18 6M6 6l12 12"
+							/>
+						</svg>
+					</button>
+				</div>
+				<div id="modalContent" class="p-6">
+					<!-- Vendor details will be populated dynamically here -->
+				</div>
+			</div>
+		</div>
+
+		<script>
+			// ----------------------
+			// Global Variables
+			// ----------------------
+			let vendorData = {};
+			let currentLevel = "location"; // location, tag, vendor
+			let currentLocation = "";
+			let currentTag = "";
+			let navigationStack = [];
+
+			// ----------------------
+			// DOM Elements
+			// ----------------------
+			const backButton = document.getElementById("backButton");
+			const locationSelectScreen = document.getElementById(
+				"locationSelectScreen"
+			);
+			const tagSelectScreen = document.getElementById("tagSelectScreen");
+			const vendorListScreen =
+				document.getElementById("vendorListScreen");
+			const locationsContainer = document.getElementById(
+				"locations-container"
+			);
+			const tagsContainer = document.getElementById("tags-container");
+			const vendorsContainer =
+				document.getElementById("vendors-container");
+			const currentLocationElement =
+				document.getElementById("currentLocation");
+			const currentLocationVendorsElement = document.getElementById(
+				"currentLocationVendors"
+			);
+			const currentTagElement = document.getElementById("currentTag");
+			const vendorModal = document.getElementById("vendorModal");
+			const modalVendorName = document.getElementById("modalVendorName");
+			const modalContent = document.getElementById("modalContent");
+			const closeModal = document.getElementById("closeModal");
+
+			// ----------------------
+			// Initialize
+			// ----------------------
+			document.addEventListener("DOMContentLoaded", async () => {
+				// Show loading state
+				document.getElementById("loading-indicator").style.display =
+					"flex";
+
+				// Add debug view toggle
+				const debugToggle = document.createElement("div");
+				debugToggle.className =
+					"fixed bottom-2 right-2 bg-gray-800 p-2 rounded-lg text-cyan-300 cursor-pointer shadow-lg";
+				debugToggle.innerHTML = "Toggle Debug";
+				debugToggle.addEventListener("click", () => {
+					const debugConsole =
+						document.getElementById("debug-console");
+					if (debugConsole.style.display === "none") {
+						debugConsole.style.display = "block";
+						debugToggle.textContent = "Hide Debug";
+					} else {
+						debugConsole.style.display = "none";
+						debugToggle.textContent = "Show Debug";
+					}
+				});
+				document.body.appendChild(debugToggle);
+
+				// Add debug console
+				const debugConsole = document.createElement("div");
+				debugConsole.id = "debug-console";
+				debugConsole.className =
+					"fixed bottom-12 right-2 bg-gray-900 p-3 rounded-lg border border-cyan-700 w-80 max-h-80 overflow-y-auto shadow-xl text-xs";
+				debugConsole.style.display = "none";
+				debugConsole.innerHTML =
+					'<div class="text-cyan-300 font-bold mb-2">Debug Console</div><div id="debug-messages"></div>';
+				document.body.appendChild(debugConsole);
+
+				// Debug logger function
+				window.debugLog = function (message) {
+					const debugMessages =
+						document.getElementById("debug-messages");
+					const time = new Date().toLocaleTimeString();
+					debugMessages.innerHTML += `<div class="py-1 border-t border-gray-800"><span class="text-gray-500">${time}</span> ${message}</div>`;
+					console.log(`[DEBUG] ${message}`);
+					debugMessages.scrollTop = debugMessages.scrollHeight;
+				};
+
+				// Load vendor data
+				try {
+					window.debugLog("Fetching vendor data...");
+					console.log("Fetching vendor data...");
+					const response = await fetch("vendors-data.json");
+
+					if (!response.ok) {
+						throw new Error(
+							`HTTP error! Status: ${response.status}`
+						);
+					}
+
+					const text = await response.text();
+					console.log("Raw JSON data length:", text.length);
+					window.debugLog(
+						`Received ${text.length} characters of data`
+					);
+
+					try {
+						vendorData = JSON.parse(text);
+						console.log("Parsed vendor data:", vendorData);
+						window.debugLog(
+							`Successfully parsed JSON with ${
+								vendorData.zones ? vendorData.zones.length : 0
+							} vendors`
+						);
+
+						// Count Arena vendors right away for debugging
+						if (
+							vendorData.zones &&
+							Array.isArray(vendorData.zones)
+						) {
+							const arenaCount = vendorData.zones.filter(
+								(vendor) =>
+									Array.isArray(vendor.location) &&
+									vendor.location.some(
+										(loc) =>
+											loc &&
+											String(loc)
+												.toLowerCase()
+												.includes("arena")
+									)
+							).length;
+							window.debugLog(
+								`Found ${arenaCount} Arena vendors in the data`
+							);
+						}
+
+						// Verify data structure
+						if (!vendorData || !vendorData.zones) {
+							throw new Error(
+								"Invalid data structure - missing zones property"
+							);
+						}
+
+						if (!Array.isArray(vendorData.zones)) {
+							throw new Error(
+								`zones property is not an array, it's a ${typeof vendorData.zones}`
+							);
+						}
+
+						console.log(
+							`Loaded ${vendorData.zones.length} vendors`
+						);
+
+						// Count Arena vendors as a check
+						const arenaVendors = vendorData.zones.filter(
+							(vendor) =>
+								Array.isArray(vendor.location) &&
+								vendor.location.some(
+									(loc) =>
+										loc &&
+										loc.trim().toLowerCase() ===
+											"arena".toLowerCase()
+								)
+						);
+						console.log(
+							`Found ${arenaVendors.length} Arena vendors in data`
+						);
+
+						// Using more flexible matching for Arena vendors for comparison
+						const arenaVendorsFlexible = vendorData.zones.filter(
+							(vendor) =>
+								Array.isArray(vendor.location) &&
+								vendor.location.some(
+									(loc) =>
+										loc &&
+										String(loc)
+											.toLowerCase()
+											.includes("arena")
+								)
+						);
+						console.log(
+							`Found ${arenaVendorsFlexible.length} Arena vendors with flexible matching`
+						);
+						window.debugLog(
+							`Strict matching found ${arenaVendors.length} Arena vendors`
+						);
+						window.debugLog(
+							`Flexible matching found ${arenaVendorsFlexible.length} Arena vendors`
+						);
+
+						// Run diagnostics
+						window.debugLog("Running vendor data diagnostics...");
+						const diagnostics = runVendorDataDiagnostics();
+						window.debugLog(
+							`Diagnostics complete: ${JSON.stringify(
+								diagnostics
+							)}`
+						);
+
+						// Hide loading indicator
+						document.getElementById(
+							"loading-indicator"
+						).style.display = "none";
+
+						// Generate location bubbles
+						generateLocations();
+					} catch (parseError) {
+						console.error("Error parsing JSON:", parseError);
+						throw new Error(
+							`Failed to parse JSON: ${parseError.message}`
+						);
+					}
+				} catch (error) {
+					console.error("Error loading vendor data:", error);
+					window.debugLog(`Error loading data: ${error.message}`);
+
+					// Hide loading indicator even if there's an error
+					document.getElementById("loading-indicator").style.display =
+						"none";
+
+					locationsContainer.innerHTML = `
+						<div class="bg-red-900 text-white p-6 rounded-lg">
+							<h3 class="font-bold text-xl mb-2">Error Loading Data</h3>
+							<p>Unable to load vendor information. Please try again later.</p>
+							<p class="text-sm mt-2">Technical details: ${error.message}</p>
+							<button id="retryButton" class="mt-4 bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded">
+								Retry
+							</button>
+						</div>
+					`;
+
+					// Add retry button functionality
+					document
+						.getElementById("retryButton")
+						?.addEventListener("click", () => {
+							window.location.reload();
+						});
+				}
+
+				// Set up event listeners
+				backButton.addEventListener("click", goBack);
+				closeModal.addEventListener("click", closeVendorModal);
+			});
+
+			// ----------------------
+			// Location Selection
+			// ----------------------
+			function generateLocations() {
+				// Clear locations container
+				locationsContainer.innerHTML = "";
+
+				// Extract unique locations with improved handling for various formats
+				const locations = new Set();
+				const locationCounts = {
+					Arena: 0,
+					"District X": 0,
+					RIP: 0,
+					Plus: 0,
+					Village: 0,
+					Guest: 0,
+					Purple: 0,
+				};
+
+				vendorData.zones.forEach((vendor) => {
+					if (Array.isArray(vendor.location)) {
+						vendor.location.forEach((loc) => {
+							if (loc) {
+								// Normalize the location string
+								const normalizedLoc = String(loc).trim();
+								if (normalizedLoc !== "") {
+									// Standardize common locations for consistency
+									let standardLoc = normalizedLoc;
+
+									// Check for Arena variants
+									if (
+										normalizedLoc
+											.toLowerCase()
+											.includes("arena")
+									) {
+										standardLoc = "Arena";
+										locationCounts["Arena"]++;
+									}
+									// Check for District X variants
+									else if (
+										normalizedLoc
+											.toLowerCase()
+											.includes("district")
+									) {
+										standardLoc = "District X";
+										locationCounts["District X"]++;
+									}
+									// Check for RIP variants
+									else if (
+										normalizedLoc
+											.toLowerCase()
+											.includes("rip")
+									) {
+										standardLoc = "RIP";
+										locationCounts["RIP"]++;
+									}
+									// Other standard locations
+									else if (
+										Object.keys(locationCounts).includes(
+											normalizedLoc
+										)
+									) {
+										locationCounts[normalizedLoc]++;
+									}
+
+									locations.add(standardLoc);
+								}
+							}
+						});
+					}
+				});
+
+				console.log(
+					"Generated unique locations:",
+					Array.from(locations)
+				);
+				console.log("Location counts:", locationCounts);
+				window.debugLog(
+					`Found vendors by location: ${JSON.stringify(
+						locationCounts
+					)}`
+				);
+				window.debugLog(
+					`Standardized to these locations: ${Array.from(
+						locations
+					).join(", ")}`
+				);
+
+				// Add location bubbles
+				locations.forEach((location) => {
+					// Create location bubble
+					const bubble = document.createElement("div");
+
+					// Determine CSS class based on location name
+					let cssClass = "location-bubble";
+					const locationLower = location.toLowerCase();
+
+					if (locationLower === "arena") cssClass += " arena";
+					else if (locationLower === "district x")
+						cssClass += " districtx";
+					else if (locationLower === "rip") cssClass += " rip";
+					else if (locationLower === "plus") cssClass += " plus";
+
+					bubble.className = cssClass;
+					bubble.onclick = () => selectLocation(location);
+
+					// Add location name
+					const text = document.createElement("span");
+					text.className = "bubble-text";
+					text.textContent = location;
+					bubble.appendChild(text);
+
+					locationsContainer.appendChild(bubble);
+				});
+			}
+
+			function selectLocation(location) {
+				currentLocation = location;
+				console.log(`Selected location: ${location}`);
+
+				// Update navigation
+				navigationStack.push({level: "location"});
+				currentLevel = "tag";
+
+				// Update UI
+				currentLocationElement.textContent = location;
+
+				// Generate tags for this location
+				generateTags(location);
+
+				// Show/hide screens
+				locationSelectScreen.classList.add("hidden");
+				tagSelectScreen.classList.remove("hidden");
+				backButton.classList.remove("hidden");
+			}
+
+			// ----------------------
+			// Tag Selection
+			// ----------------------
+			function generateTags(location) {
+				// Clear tags container
+				tagsContainer.innerHTML = "";
+
+				// Add debug information
+				console.log("Generating tags for location:", location);
+
+				// Find vendors for this location using a more flexible match
+				const vendorsInLocation = vendorData.zones.filter((vendor) => {
+					const hasLocation =
+						Array.isArray(vendor.location) &&
+						vendor.location.some(
+							(loc) =>
+								loc &&
+								loc
+									.toLowerCase()
+									.includes(location.toLowerCase())
+						);
+
+					return hasLocation;
+				});
+
+				console.log(
+					`Found ${vendorsInLocation.length} vendors in ${location}`
+				);
+
+				// Extract unique tags from vendors
+				const uniqueTags = new Set();
+
+				// Add "All" option
+				uniqueTags.add("All");
+
+				// Process vendor tags
+				vendorsInLocation.forEach((vendor) => {
+					if (Array.isArray(vendor.tags)) {
+						vendor.tags.forEach((tag) => {
+							// Only add main category tags
+							if (
+								[
+									"Food",
+									"Drinks",
+									"Bar",
+									"Merchandise",
+									"Activities",
+								].includes(tag)
+							) {
+								uniqueTags.add(tag);
+							}
+						});
+					}
+				});
+
+				// Add tag pills
+				Array.from(uniqueTags)
+					.sort()
+					.forEach((tag) => {
+						const pill = document.createElement("div");
+						pill.className = "tag-pill cursor-pointer";
+						pill.textContent = tag;
+						pill.onclick = () => selectTag(tag);
+						tagsContainer.appendChild(pill);
+					});
+			}
+
+			function selectTag(tag) {
+				currentTag = tag;
+				console.log(`Selected tag: ${tag}`);
+
+				// Update navigation
+				navigationStack.push({level: "tag", location: currentLocation});
+				currentLevel = "vendor";
+
+				// Update UI
+				currentLocationVendorsElement.textContent = currentLocation;
+				currentTagElement.textContent = tag;
+
+				// Generate vendor list
+				generateVendors(currentLocation, tag);
+
+				// Show/hide screens
+				tagSelectScreen.classList.add("hidden");
+				vendorListScreen.classList.remove("hidden");
+			}
+
+			// ----------------------
+			// Vendor List
+			// ----------------------
+			function generateVendors(location, tag) {
+				// Clear vendors container
+				vendorsContainer.innerHTML = "";
+
+				// Add debug message at the top of vendor container
+				vendorsContainer.innerHTML = `
+					<div class="col-span-full bg-gray-800 p-4 rounded-lg mb-4">
+						<p class="text-sm">Searching for vendors in "${location}" with tag "${tag}"</p>
+					</div>
+				`;
+
+				// Log what we're looking for
+				console.log("Looking for vendors in location:", location);
+				console.log("Looking for vendors with tag:", tag);
+
+				// Find vendors matching location and tag
+				let matchingVendors = [];
+
+				// Make sure we have the correct data structure
+				if (!vendorData || !vendorData.zones) {
+					console.error("Invalid vendor data structure:", vendorData);
+					vendorsContainer.innerHTML += `
+						<div class="col-span-full bg-red-900 p-4 rounded-lg mb-4">
+							<p class="text-white">Error: Invalid data structure</p>
+						</div>
+					`;
+					return;
+				}
+
+				try {
+					// Filter vendors by location and tag
+					if (Array.isArray(vendorData.zones)) {
+						console.log(
+							`Total vendors in data: ${vendorData.zones.length}`
+						);
+
+						// Enhanced location debugging before filtering
+						if (location === "Arena") {
+							const arenaVendorsDebug = vendorData.zones.filter(
+								(vendor) =>
+									Array.isArray(vendor.location) &&
+									vendor.location.some(
+										(loc) =>
+											loc &&
+											String(loc)
+												.toLowerCase()
+												.includes("arena")
+									)
+							);
+							console.log(
+								`DEBUG: Found ${arenaVendorsDebug.length} potential Arena vendors before tag filtering`
+							);
+
+							// Show the first few
+							arenaVendorsDebug
+								.slice(0, 3)
+								.forEach((vendor, i) => {
+									console.log(
+										`DEBUG: Arena vendor ${i + 1}: ${
+											vendor.name || "Unknown"
+										}`
+									);
+									console.log(
+										`DEBUG:   Location: ${JSON.stringify(
+											vendor.location
+										)}`
+									);
+									console.log(
+										`DEBUG:   Tags: ${JSON.stringify(
+											vendor.tags
+										)}`
+									);
+								});
+						}
+
+						matchingVendors = vendorData.zones.filter((vendor) => {
+							// Match location - ensure we handle all formats
+							const locationMatch =
+								Array.isArray(vendor.location) &&
+								vendor.location.some((loc) => {
+									// Convert to string in case it's not already a string
+									const locStr = loc
+										? String(loc).toLowerCase().trim()
+										: "";
+									const searchLoc = location
+										.toLowerCase()
+										.trim();
+									const isMatch = locStr.includes(searchLoc);
+
+									// Only log for Arena to avoid excessive logging
+									if (location === "Arena" && isMatch) {
+										console.log(
+											`DEBUG: Location match for "${
+												vendor.name || "Unknown"
+											}": ${locStr}`
+										);
+									}
+
+									return isMatch;
+								});
+
+							// Match tag (if not "All")
+							const tagMatch =
+								tag === "All" ||
+								(Array.isArray(vendor.tags) &&
+									vendor.tags.includes(tag));
+
+							// For Arena vendors, log when they don't match the tag
+							if (
+								location === "Arena" &&
+								locationMatch &&
+								!tagMatch &&
+								tag !== "All"
+							) {
+								console.log(
+									`DEBUG: Arena vendor "${
+										vendor.name || "Unknown"
+									}" doesn't match tag "${tag}"`
+								);
+								console.log(
+									`DEBUG:   Tags: ${JSON.stringify(
+										vendor.tags
+									)}`
+								);
+							}
+
+							return locationMatch && tagMatch;
+						});
+					} else {
+						console.error(
+							"Invalid vendor data structure! Expected array at vendorData.zones but got:",
+							typeof vendorData.zones
+						);
+					}
+
+					console.log(
+						`Found ${matchingVendors.length} matching vendors for ${location} with tag ${tag}`
+					);
+				} catch (error) {
+					console.error("Error filtering vendors:", error);
+				}
+
+				console.log(
+					`Found ${matchingVendors.length} vendors in ${location} with tag ${tag}`
+				);
+
+				// If no vendors found
+				if (matchingVendors.length === 0) {
+					vendorsContainer.innerHTML += `
+						<div class="col-span-full bg-gray-800 p-6 rounded-lg text-center">
+							<p class="text-xl text-gray-300">No vendors found matching these criteria.</p>
+							<p class="text-gray-400 mt-2">Try a different category or location.</p>
+						</div>
+					`;
+					return;
+				}
+
+				// Add vendor count
+				vendorsContainer.innerHTML += `
+					<div class="col-span-full mb-4">
+						<p class="text-cyan-300">Found ${matchingVendors.length} vendors</p>
+					</div>
+				`;
+
+				// Add vendor cards
+				matchingVendors.forEach((vendor, index) => {
+					try {
+						// Create vendor card
+						const card = document.createElement("div");
+						card.className = "vendor-card p-4 fade-in";
+						card.style.animationDelay = `${index * 0.1}s`;
+						card.onclick = () => showVendorDetails(vendor);
+
+						// Get vendor name (with safety check)
+						const vendorName = vendor.name || "Unnamed Vendor";
+
+						// Get vendor locations (with safety check)
+						const locationStr = Array.isArray(vendor.location)
+							? vendor.location.filter((l) => l).join(", ")
+							: vendor.location || "Unknown Location";
+
+						// Get vendor type from tags
+						let vendorType = "Vendor";
+						if (Array.isArray(vendor.tags)) {
+							if (vendor.tags.includes("Food"))
+								vendorType = "Food";
+							else if (
+								vendor.tags.includes("Drinks") ||
+								vendor.tags.includes("Bar")
+							)
+								vendorType = "Drinks";
+							else if (vendor.tags.includes("Merchandise"))
+								vendorType = "Merchandise";
+							else if (vendor.tags.includes("Activities"))
+								vendorType = "Activities";
+						}
+
+						// Find dietary options (with safety check)
+						let dietaryOptions = [];
+						if (Array.isArray(vendor.tags)) {
+							const dietaryTags = [
+								"Vegetarian Options",
+								"Vegan Options",
+								"Gluten Free Options",
+								"Halal",
+							];
+							dietaryOptions = vendor.tags.filter((tag) =>
+								dietaryTags.includes(tag)
+							);
+						}
+
+						// Log details for Arena vendors for debugging
+						if (location === "Arena") {
+							console.log(
+								`Adding card for Arena vendor: ${vendorName}`
+							);
+							console.log(
+								`  Location data: ${JSON.stringify(
+									vendor.location
+								)}`
+							);
+							console.log(`  Processed location: ${locationStr}`);
+						}
+
+						// Create card HTML
+						card.innerHTML = `
+							<h3 class="font-bold text-lg text-cyan-400">${vendorName}</h3>
+							<div class="text-sm text-gray-400 mb-1">${vendorType}</div>
+							<div class="text-xs text-gray-500 mb-3">${locationStr}</div>
+							
+							${
+								dietaryOptions.length > 0
+									? `
+								<div class="flex flex-wrap gap-1 mb-3">
+									${dietaryOptions
+										.map(
+											(option) => `
+										<span class="bg-green-900 text-green-100 px-2 py-1 text-xs rounded">${option}</span>
+									`
+										)
+										.join("")}
+								</div>
+							`
+									: ""
+							}
+							
+							<div class="text-cyan-300 text-sm mt-2 flex items-center">
+								View menu or details
+								<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+								</svg>
+							</div>
+						`;
+					} catch (err) {
+						console.error(
+							`Error creating vendor card for index ${index}:`,
+							err,
+							vendor
+						);
+						const card = document.createElement("div");
+						card.className = "vendor-card p-4 fade-in bg-red-900";
+						card.innerHTML = `
+							<h3 class="font-bold text-lg text-white">${
+								vendor.name || "Error: Invalid Vendor"
+							}</h3>
+							<div class="text-sm text-gray-200">There was an error displaying this vendor</div>
+						`;
+					}
+
+					vendorsContainer.appendChild(card);
+				});
+
+				// Add diagnostics footer for arena
+				if (location === "Arena") {
+					vendorsContainer.innerHTML += `
+						<div class="col-span-full mt-8 p-4 bg-gray-800 rounded-lg">
+							<details>
+								<summary class="text-cyan-300 cursor-pointer">Debugging Information</summary>
+								<div class="mt-2 text-sm text-gray-400">
+									<p>Total Arena vendors found: ${matchingVendors.length}</p>
+									<p>Current tag filter: ${tag}</p>
+									<p>Check the browser console for more detailed debugging information.</p>
+								</div>
+							</details>
+						</div>
+					`;
+				}
+			}
+
+			// ----------------------
+			// Vendor Details
+			// ----------------------
+			function showVendorDetails(vendor) {
+				console.log("Showing vendor details:", vendor);
+
+				try {
+					// Validate vendor data
+					if (!vendor) {
+						console.error("Invalid vendor data:", vendor);
+						modalVendorName.textContent = "Error: Invalid Vendor";
+						modalContent.innerHTML =
+							'<p class="text-red-400">There was an error displaying this vendor\'s details.</p>';
+						vendorModal.classList.remove("hidden");
+						return;
+					}
+
+					// Set vendor name in modal with fallback
+					modalVendorName.textContent =
+						vendor.name || "Unnamed Vendor";
+
+					// Build modal content
+					let contentHTML = "";
+
+					// Location with improved handling
+					const locationDisplay =
+						Array.isArray(vendor.location) &&
+						vendor.location.length > 0
+							? vendor.location
+									.filter((loc) => loc && loc.trim() !== "")
+									.join(", ")
+							: vendor.location || "Location unknown";
+
+					contentHTML += `
+						<div class="mb-4 pb-3 border-b border-gray-700">
+							<div class="flex items-center">
+								<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-cyan-400 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+								</svg>
+								<span class="font-semibold text-gray-300">Location:</span>
+								<span class="ml-2">${locationDisplay}</span>
+							</div>
+						</div>
+					`;
+
+					// Tags with validation
+					if (Array.isArray(vendor.tags) && vendor.tags.length > 0) {
+						contentHTML += `
+							<div class="mb-4">
+								<div class="text-lg font-semibold text-cyan-400 mb-2">Categories</div>
+								<div class="flex flex-wrap gap-2">
+									${vendor.tags
+										.map(
+											(tag) => `
+										<span class="bg-gray-800 text-gray-300 px-3 py-1 rounded-full text-sm">${tag}</span>
+									`
+										)
+										.join("")}
+								</div>
+							</div>
+						`;
+					}
+
+					// Menu with validation
+					if (Array.isArray(vendor.menu) && vendor.menu.length > 0) {
+						contentHTML += `
+						<div class="mt-6">
+							<div class="text-lg font-semibold text-cyan-400 mb-3">Menu</div>
+							<div class="space-y-3">
+					`;
+
+						vendor.menu.forEach((item) => {
+							try {
+								let displayText = "";
+
+								// Handle different menu item formats
+								if (typeof item === "string") {
+									displayText = item;
+								} else if (
+									typeof item === "object" &&
+									item !== null
+								) {
+									displayText = item.name || "";
+
+									if (item.price) {
+										displayText += `<span class="float-right font-bold">${item.price}</span>`;
+									}
+
+									if (item.description) {
+										displayText += `<div class="text-sm text-gray-400 mt-1">${item.description}</div>`;
+									}
+								}
+
+								contentHTML += `
+								<div class="bg-gray-800 bg-opacity-50 p-3 rounded">
+									${displayText || "Untitled menu item"}
+								</div>
+							`;
+							} catch (err) {
+								console.error(
+									"Error processing menu item:",
+									err,
+									item
+								);
+								contentHTML += `
+								<div class="bg-red-900 bg-opacity-50 p-3 rounded">
+									Error displaying menu item
+								</div>
+							`;
+							}
+						});
+
+						contentHTML += `
+							</div>
+						</div>
+					`;
+					}
+
+					// Debug info for developers (hidden by default)
+					contentHTML += `
+					<div class="mt-8">
+						<details>
+							<summary class="text-xs text-gray-500 cursor-pointer">Debug info</summary>
+							<div class="mt-2 p-3 bg-gray-900 rounded text-xs font-mono overflow-x-auto">
+								<pre>${JSON.stringify(vendor, null, 2)}</pre>
+							</div>
+						</details>
+					</div>
+				`;
+
+					// Set modal content
+					modalContent.innerHTML = contentHTML;
+
+					// Show modal
+					vendorModal.classList.remove("hidden");
+				} catch (error) {
+					console.error("Error displaying vendor details:", error);
+					modalVendorName.textContent = vendor?.name || "Error";
+					modalContent.innerHTML = `
+						<div class="bg-red-900 p-4 rounded">
+							<p>There was an error displaying this vendor's details.</p>
+							<p class="text-sm mt-2">${error.message}</p>
+						</div>
+					`;
+					vendorModal.classList.remove("hidden");
+				}
+			}
+
+			function closeVendorModal() {
+				vendorModal.classList.add("hidden");
+			}
+
+			// ----------------------
+			// Navigation
+			// ----------------------
+			function goBack() {
+				if (navigationStack.length === 0) return;
+
+				const previous = navigationStack.pop();
+
+				if (previous.level === "location") {
+					// Go back to location selection
+					currentLevel = "location";
+					currentLocation = "";
+
+					// Update UI
+					tagSelectScreen.classList.add("hidden");
+					vendorListScreen.classList.add("hidden");
+					locationSelectScreen.classList.remove("hidden");
+					backButton.classList.add("hidden");
+				} else if (previous.level === "tag") {
+					// Go back to tag selection
+					currentLevel = "tag";
+					currentTag = "";
+
+					// Update UI
+					vendorListScreen.classList.add("hidden");
+					tagSelectScreen.classList.remove("hidden");
+				}
+			}
+
+			// ----------------------
+			// Data Diagnostics
+			// ----------------------
+			function runVendorDataDiagnostics() {
+				if (
+					!vendorData ||
+					!vendorData.zones ||
+					!Array.isArray(vendorData.zones)
+				) {
+					window.debugLog("❌ Vendor data is invalid or missing");
+					return;
+				}
+
+				window.debugLog(
+					`🔍 Running diagnostics on ${vendorData.zones.length} vendors`
+				);
+
+				// Check for vendors with missing or invalid locations
+				const vendorsWithNoLocation = vendorData.zones.filter(
+					(v) =>
+						!v.location ||
+						!Array.isArray(v.location) ||
+						v.location.length === 0
+				);
+				window.debugLog(
+					`📊 Vendors with missing locations: ${vendorsWithNoLocation.length}`
+				);
+
+				// Check for vendors with missing or invalid tags
+				const vendorsWithNoTags = vendorData.zones.filter(
+					(v) =>
+						!v.tags || !Array.isArray(v.tags) || v.tags.length === 0
+				);
+				window.debugLog(
+					`📊 Vendors with missing tags: ${vendorsWithNoTags.length}`
+				);
+
+				// Count vendors by location
+				const locationMap = {};
+				vendorData.zones.forEach((v) => {
+					if (Array.isArray(v.location)) {
+						v.location.forEach((loc) => {
+							if (loc) {
+								const normLoc = String(loc)
+									.trim()
+									.toLowerCase();
+								locationMap[normLoc] =
+									(locationMap[normLoc] || 0) + 1;
+							}
+						});
+					}
+				});
+
+				window.debugLog(`📊 Vendor counts by location (normalized):`);
+				Object.entries(locationMap)
+					.sort((a, b) => b[1] - a[1]) // Sort by count descending
+					.forEach(([loc, count]) => {
+						window.debugLog(`   ${loc}: ${count} vendors`);
+					});
+
+				// Check for Arena vendors specifically since that's the problem area
+				const arenaVendors = vendorData.zones.filter(
+					(v) =>
+						Array.isArray(v.location) &&
+						v.location.some(
+							(loc) =>
+								loc &&
+								String(loc).toLowerCase().includes("arena")
+						)
+				);
+
+				window.debugLog(
+					`📊 Arena vendors (flexible matching): ${arenaVendors.length}`
+				);
+
+				// Check food tags specifically in Arena
+				const arenaFoodVendors = arenaVendors.filter(
+					(v) => Array.isArray(v.tags) && v.tags.includes("Food")
+				);
+
+				window.debugLog(
+					`📊 Arena food vendors: ${arenaFoodVendors.length}`
+				);
+
+				return {
+					totalVendors: vendorData.zones.length,
+					missingLocations: vendorsWithNoLocation.length,
+					missingTags: vendorsWithNoTags.length,
+					arenaVendors: arenaVendors.length,
+					arenaFoodVendors: arenaFoodVendors.length,
+				};
+			}
+		</script>
+
+		<!-- Initialize Navigation Component -->
+		<script type="module">
+			import NavigationComponent from "./js/navigation.js";
+
+			document.addEventListener("DOMContentLoaded", function () {
+				const navigationComponent = new NavigationComponent();
+				navigationComponent.init("#navigation-placeholder");
+			});
+		</script>
+	</body>
+</html>

@@ -1,0 +1,781 @@
+{
+  "zones": {
+    "Arena": {
+      "vendors": [
+    {
+      "id": "vendor_1",
+      "name": "OINK BBQ",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_2",
+      "name": "BURGERS & FRIES",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_3",
+      "name": "BUNNYMANS",
+      "tags": ["Arena", "GF_Free"]
+    },
+    {
+      "id": "vendor_4",
+      "name": "VOODOO RAYS",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_5",
+      "name": "LOADED DOGS",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_6",
+      "name": "SUPERMACS",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_7",
+      "name": "REVERSE BUNGEE",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_8",
+      "name": "STAR FLYER",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_9",
+      "name": "GIANT WHEEL",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_10",
+      "name": "CAFFE LAMBRO COCKTAILS",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_11",
+      "name": "PAELLA",
+      "tags": ["Arena", "GF_Free"]
+    },
+    {
+      "id": "vendor_12",
+      "name": "MUGS",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_13",
+      "name": "COOKIE DOUGH & PANCAKES CONTAINER",
+      "tags": ["Arena", "GF_Free"]
+    },
+    {
+      "id": "vendor_14",
+      "name": "NEW YORK FRIES",
+      "tags": ["Arena", "GF_Free"]
+    },
+    {
+      "id": "vendor_15",
+      "name": "WINGS & FRIES",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_16",
+      "name": "CHURROS",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_17",
+      "name": "DUCK CONTAINER",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_18",
+      "name": "FIRE & DOUGH",
+      "tags": ["Arena", "GF_Free"]
+    },
+    {
+      "id": "vendor_19",
+      "name": "MEXITACO",
+      "tags": ["Coeliac_friendly", "Arena", "GF_Free"]
+    },
+    {
+      "id": "vendor_20",
+      "name": "OPA AUTHENTIC GREEK",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_21",
+      "name": "PHAT KHAB",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_22",
+      "name": "AUTHENTIC GERMAN SAUSAGES",
+      "tags": ["Arena", "GF_Free"]
+    },
+    {
+      "id": "vendor_23",
+      "name": "HIDE & GREEK",
+      "tags": ["Arena", "GF_Free"]
+    },
+    {
+      "id": "vendor_24",
+      "name": "THAT'S NACHO BURRITO",
+      "tags": ["Arena", "GF_Free"]
+    },
+    {
+      "id": "vendor_25",
+      "name": "HAPPY MAKI - VSUSHI",
+      "tags": ["Coeliac_friendly", "Arena"]
+    },
+    {
+      "id": "vendor_26",
+      "name": "CHICKENISH - VEGAN FRIED CHICKEN",
+      "tags": ["Arena", "GF_Free"]
+    },
+    {
+      "id": "vendor_27",
+      "name": "RISOTTO & ARANCINI",
+      "tags": ["Arena", "GF_Free"]
+    },
+    {
+      "id": "vendor_28",
+      "name": "CEYLON & BEYOND",
+      "tags": ["Arena", "GF_Free"]
+    },
+    {
+      "id": "vendor_29",
+      "name": "TAIBA MEXICAN",
+      "tags": ["Arena", "GF_Free"]
+    },
+    {
+      "id": "vendor_30",
+      "name": "SALT & CHILLI CHICKEN",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_31",
+      "name": "BROTHERS BOND BURGERS",
+      "tags": ["Arena", "GF_Free"]
+    },
+    {
+      "id": "vendor_32",
+      "name": "MARIO'S CHICKEN & FRIES",
+      "tags": ["Arena", "GF_Free"]
+    },
+    {
+      "id": "vendor_33",
+      "name": "VEGGIE REPUBLIC",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_34",
+      "name": "FORNO PIZZA",
+      "tags": ["Arena", "GF_Free"]
+    },
+    {
+      "id": "vendor_35",
+      "name": "MR CHURROS",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_36",
+      "name": "CHILLI KITCHEN",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_37",
+      "name": "WOK BOY",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_38",
+      "name": "BAR 4",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_39",
+      "name": "SOFT DRINKS",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_40",
+      "name": "SOFT DRINKS & SPIRITS",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_41",
+      "name": "GUEST BAR",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_42",
+      "name": "VIP NATION BAR",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_43",
+      "name": "COCKTAIL COCKTAIL",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_44",
+      "name": "THE IRON HARP",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_45",
+      "name": "THE GOOSENECK INN",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_46",
+      "name": "GUINNESS BAR",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_47",
+      "name": "BEER HALL",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_48",
+      "name": "SPIRIT BAR",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_49",
+      "name": "NO & LOW BAR",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_50",
+      "name": "BURGER AND BEYOND",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_51",
+      "name": "REDHEADS MAC N CHEESE",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_52",
+      "name": "THE ALPINE PIZZA CO",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_53",
+      "name": "OLD SARUM TATTOO",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_54",
+      "name": "A TASTE OF JAM ROCK LTD",
+      "tags": ["Arena", "GF_Free"]
+    },
+    {
+      "id": "vendor_55",
+      "name": "GOOD SLICE PIZZA",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_56",
+      "name": "WOK PLANT-VEGAN",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_57",
+      "name": "TIKKA WRAP",
+      "tags": ["Arena", "GF_Free"]
+    },
+    {
+      "id": "vendor_58",
+      "name": "CHURROS AND COFFEE HUT",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_59",
+      "name": "DUCK HUT",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_60",
+      "name": "BURGER SHACK",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_61",
+      "name": "WING THEORY",
+      "tags": ["Arena", "GF_Free"]
+    },
+    {
+      "id": "vendor_62",
+      "name": "DUCK ARTS COFFEE",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_63",
+      "name": "ROUTES COFFEE",
+      "tags": ["Arena", "GF_Free"]
+    },
+    {
+      "id": "vendor_64",
+      "name": "CHICKEN CHIPS & DIPS MARQUEE",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_65",
+      "name": "GREEK MARQUEE",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_66",
+      "name": "MANDALA HIMALAYAN DUMPLINGS",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_67",
+      "name": "CHURROS & COFFEE",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_68",
+      "name": "EVERY FISH BAR",
+      "tags": ["Arena", "GF_Free"]
+    },
+    {
+      "id": "vendor_69",
+      "name": "THE ROASTED MARTINI",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_70",
+      "name": "HAPPY CREPES",
+      "tags": ["Arena", "GF_Free"]
+    },
+    {
+      "id": "vendor_71",
+      "name": "TORI & BENS KITCHEN",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_72",
+      "name": "MEXICAN",
+      "tags": ["Arena", "GF_Free"]
+    },
+    {
+      "id": "vendor_73",
+      "name": "BIG MOUTH GYOZA",
+      "tags": ["Arena", "GF_Free"]
+    },
+    {
+      "id": "vendor_74",
+      "name": "CHICKEN WRAPS",
+      "tags": ["Arena", "GF_Free"]
+    },
+    {
+      "id": "vendor_75",
+      "name": "THE ROAMING ROTISSERIE",
+      "tags": ["Arena", "GF_Free"]
+    },
+    {
+      "id": "vendor_76",
+      "name": "LOADED SHACK",
+      "tags": ["Arena", "GF_Free"]
+    },
+    {
+      "id": "vendor_77",
+      "name": "BEST CHEESE",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_78",
+      "name": "ONE PAN NOODLES",
+      "tags": ["Arena", "GF_Free"]
+    },
+    {
+      "id": "vendor_79",
+      "name": "VINTAGE COFFEE",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_80",
+      "name": "GOODNESS GRACIOUS HEALTHY FOODS",
+      "tags": ["Arena", "GF_Free"]
+    },
+    {
+      "id": "vendor_81",
+      "name": "FISH & CHIPS",
+      "tags": ["Arena", "GF_Free"]
+    },
+    {
+      "id": "vendor_82",
+      "name": "PIZZERIA - FRIES FRIES FRIES - SAUCY PASTA - MAC & CHEESE",
+      "tags": ["Arena", "GF_Free"]
+    },
+    {
+      "id": "vendor_83",
+      "name": "DELILAH'S DONUTS",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_84",
+      "name": "BAR 1",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_85",
+      "name": "SOFT DRINKS",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_86",
+      "name": "BAR 2",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_87",
+      "name": "BAR 3",
+      "tags": ["Arena"]
+    },
+    {
+      "id": "vendor_88",
+      "name": "ALPINE HOT DOGS",
+      "tags": ["District X"]
+    },
+    {
+      "id": "vendor_89",
+      "name": "OATS MY GOODNESS",
+      "tags": ["District X"]
+    },
+    {
+      "id": "vendor_90",
+      "name": "HOLY DUCK",
+      "tags": ["District X"]
+    },
+    {
+      "id": "vendor_91",
+      "name": "GHOST TRAIN",
+      "tags": ["District X"]
+    },
+    {
+      "id": "vendor_92",
+      "name": "FUN HOUSE",
+      "tags": ["District X"]
+    },
+    {
+      "id": "vendor_93",
+      "name": "ATMOSFEAR",
+      "tags": ["District X"]
+    },
+    {
+      "id": "vendor_94",
+      "name": "WALTZER",
+      "tags": ["District X"]
+    },
+    {
+      "id": "vendor_95",
+      "name": "DODGEM",
+      "tags": ["District X"]
+    },
+    {
+      "id": "vendor_96",
+      "name": "NOODLE CITY",
+      "tags": ["District X", "GF_Free"]
+    },
+    {
+      "id": "vendor_97",
+      "name": "DISTRICT X PUB",
+      "tags": ["District X"]
+    },
+    {
+      "id": "vendor_98",
+      "name": "HAIR OF THE DOG",
+      "tags": ["District X"]
+    },
+    {
+      "id": "vendor_99",
+      "name": "THE MERCIAN AXE",
+      "tags": ["District X"]
+    },
+    {
+      "id": "vendor_100",
+      "name": "HOG ROAST",
+      "tags": ["District X"]
+    },
+    {
+      "id": "vendor_101",
+      "name": "BURGERS & FRIES",
+      "tags": ["District X"]
+    },
+    {
+      "id": "vendor_102",
+      "name": "SNOOP HOG",
+      "tags": ["District X", "GF_Free"]
+    },
+    {
+      "id": "vendor_103",
+      "name": "PERSIAN DELIGHTS",
+      "tags": ["District X", "GF_Free"]
+    },
+    {
+      "id": "vendor_104",
+      "name": "TEABAG CHIHUAHUA'S STREETFOOD MEXICAN",
+      "tags": ["District X", "GF_Free"]
+    },
+    {
+      "id": "vendor_105",
+      "name": "PIZZATOPIA",
+      "tags": ["District X"]
+    },
+    {
+      "id": "vendor_106",
+      "name": "LOADED FRIES & NACHOS",
+      "tags": ["District X", "GF_Free"]
+    },
+    {
+      "id": "vendor_107",
+      "name": "THE GREEK",
+      "tags": ["District X"]
+    },
+    {
+      "id": "vendor_108",
+      "name": "SMOKEHOUSE",
+      "tags": ["District X"]
+    },
+    {
+      "id": "vendor_109",
+      "name": "YAY CHURROS",
+      "tags": ["District X"]
+    },
+    {
+      "id": "vendor_110",
+      "name": "VEGAN & VEGETARIAN",
+      "tags": ["District X", "GF_Free"]
+    },
+    {
+      "id": "vendor_111",
+      "name": "WRAPS & BAPS",
+      "tags": ["District X"]
+    },
+    {
+      "id": "vendor_112",
+      "name": "THE ALPINE PIZZA CO",
+      "tags": ["District X"]
+    },
+    {
+      "id": "vendor_113",
+      "name": "KEBAB CARTEL",
+      "tags": ["District X"]
+    },
+    {
+      "id": "vendor_114",
+      "name": "CHICKEN SNACK",
+      "tags": ["District X"]
+    },
+    {
+      "id": "vendor_115",
+      "name": "BURGER N FRIES",
+      "tags": ["District X", "GF_Free"]
+    },
+    {
+      "id": "vendor_116",
+      "name": "CUSTARD & CRUMBLE",
+      "tags": ["District X"]
+    },
+    {
+      "id": "vendor_117",
+      "name": "AXE HEAD BY THE AXE HOUSE",
+      "tags": ["District X"]
+    },
+    {
+      "id": "vendor_118",
+      "name": "OLD SARUM TATTOO",
+      "tags": ["District X"]
+    },
+    {
+      "id": "vendor_119",
+      "name": "CAMEL SHISHA",
+      "tags": ["District X"]
+    },
+    {
+      "id": "vendor_120",
+      "name": "RAVEN RECORDS",
+      "tags": ["District X"]
+    },
+    {
+      "id": "vendor_121",
+      "name": "AROMA GRILL",
+      "tags": ["Coeliac_friendly", "Arena"]
+    },
+    {
+      "id": "vendor_122",
+      "name": "INDONESIAN COCONUT CURRY",
+      "tags": ["Coeliac_friendly", "Arena"]
+    },
+    {
+      "id": "vendor_123",
+      "name": "HALLOUMINATION",
+      "tags": ["Coeliac_friendly", "Arena"]
+    },
+    {
+      "id": "vendor_124",
+      "name": "PHO NATION",
+      "tags": ["Coeliac_friendly", "Arena"]
+    },
+    {
+      "id": "vendor_125",
+      "name": "NUGS",
+      "tags": ["Coeliac_friendly", "Arena"]
+    },
+    {
+      "id": "vendor_126",
+      "name": "THE ROCK 'N' ROLL TOASTIE",
+      "tags": ["GF_Free", "Arena"]
+    },
+    {
+      "id": "vendor_127",
+      "name": "WOODWARDS FARM BURGER SHACK",
+      "tags": ["GF_Free", "Arena"]
+    },
+    {
+      "id": "vendor_128",
+      "name": "CHARGRILLED",
+      "tags": ["GF_Free", "Arena"]
+    },
+    {
+      "id": "vendor_129",
+      "name": "LOADED SPUDS CHIPS WEDGES",
+      "tags": ["GF_Free", "Arena"]
+    },
+    {
+      "id": "vendor_130",
+      "name": "LOADED FRIES (SPUD GUN LOADED FRIES)",
+      "tags": ["GF_Free", "Arena"]
+    },
+    {
+      "id": "vendor_131",
+      "name": "3CZ BBQ",
+      "tags": ["GF_Free", "Arena"]
+    },
+    {
+      "id": "vendor_132",
+      "name": "GOURMET NOODLES",
+      "tags": ["GF_Free", "Arena"]
+    },
+    {
+      "id": "vendor_133",
+      "name": "GYROS",
+      "tags": ["GF_Free", "Arena"]
+    },
+    {
+      "id": "vendor_134",
+      "name": "JAPANESE FRIED CHICKEN",
+      "tags": ["GF_Free", "Arena"]
+    },
+    {
+      "id": "vendor_135",
+      "name": "THE GARDEN RESTAURANTS",
+      "tags": ["GF_Free", "Guest_Area"]
+    },
+    {
+      "id": "vendor_136",
+      "name": "BURRITOS AND NACHOS",
+      "tags": ["GF_Free", "Arena"]
+    },
+    {
+      "id": "vendor_137",
+      "name": "CHICK N PLANT BASED",
+      "tags": ["GF_Free", "Arena"]
+    },
+    {
+      "id": "vendor_138",
+      "name": "FISH N CHIPS",
+      "tags": ["GF_Free", "Arena"]
+    },
+    {
+      "id": "vendor_139",
+      "name": "EAT GREEK",
+      "tags": ["GF_Free", "Arena"]
+    },
+    {
+      "id": "vendor_140",
+      "name": "EAT KEBAB",
+      "tags": ["GF_Free", "Arena"]
+    },
+    {
+      "id": "vendor_141",
+      "name": "NOODLE KING",
+      "tags": ["GF_Free", "Arena"]
+    },
+    {
+      "id": "vendor_142",
+      "name": "PHAT KHAO",
+      "tags": ["GF_Free", "Arena"]
+    },
+    {
+      "id": "vendor_143",
+      "name": "IN FOR A PENNE",
+      "tags": ["GF_Free"]
+    },
+    {
+      "id": "vendor_144",
+      "name": "AMEN JERK BBQ",
+      "tags": ["GF_Free"]
+    },
+    {
+      "id": "vendor_145",
+      "name": "HANNAH'S TOAST BOX",
+      "tags": ["GF_Free", "purple"]
+    },
+    {
+      "id": "vendor_146",
+      "name": "CARNIVAL COFFEE",
+      "tags": ["GF_Free", "Red"]
+    },
+    {
+      "id": "vendor_147",
+      "name": "PANTHA COFFEE",
+      "tags": ["GF_Free"]
+    },
+    {
+      "id": "vendor_148",
+      "name": "LOADED HASH BROWNS",
+      "tags": ["GF_Free"]
+    },
+    {
+      "id": "vendor_149",
+      "name": "ARANCINA PIZZERIA",
+      "tags": ["GF_Free", "Guest"]
+    },
+    {
+      "id": "vendor_150",
+      "name": "I LOVE OSTRICH",
+      "tags": ["GF_Free", "Guest"]
+    },
+    {
+      "id": "vendor_151",
+      "name": "AMORE PIZZETTA",
+      "tags": ["GF_Free", "Plus"]
+    },
+    {
+      "id": "vendor_152",
+      "name": "AMORE PIZZETTA - BREAKFAST & LUNCH",
+      "tags": ["GF_Free", "RIP"]
+    },
+    {
+      "id": "vendor_153",
+      "name": "YELLOW BUS BURGERS",
+      "tags": ["GF_Free", "Red"]
+    },
+    {
+      "id": "vendor_154",
+      "name": "NOBLE'S KITCHEN",
+      "tags": ["GF_Free", "RIP"]
+    },
+    {
+      "id": "vendor_155",
+      "name": "LOVIN' THE OVEN",
+      "tags": ["GF_Free"]
+    }
+  ]
+}

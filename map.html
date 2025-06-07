@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Download Festival Camp Map</title>
+		<script src="https://cdn.tailwindcss.com"></script>
+		<link rel="stylesheet" href="styles.css" />
+		<script type="module" src="js/navigation.js"></script>
+		<script type="module" src="js/menu.js"></script>
+		<script type="module" src="js/countdown.js"></script>
+		<style>
+			/* Floating particles background */
+			.particles {
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				pointer-events: none;
+				z-index: 0;
+			}
+
+			.particle {
+				position: absolute;
+				width: 2px;
+				height: 2px;
+				background: #00ffc3;
+				border-radius: 50%;
+				animation: float-particle 8s infinite ease-in-out;
+				opacity: 0.3;
+			}
+
+			@keyframes float-particle {
+				0%,
+				100% {
+					transform: translateY(100vh) translateX(0) scale(0.5);
+					opacity: 0;
+				}
+				50% {
+					opacity: 0.8;
+					transform: translateY(0) translateX(50px) scale(1);
+				}
+			}
+
+			.map-container {
+				position: relative;
+				overflow: hidden;
+				border-radius: 12px;
+				box-shadow: 0 4px 32px rgba(0, 0, 0, 0.5);
+				cursor: grab;
+			}
+
+			.map-container:active {
+				cursor: grabbing;
+			}
+
+			.map-image {
+				width: 100%;
+				height: auto;
+				transition: transform 0.3s cubic-bezier(0.4, 2, 0.6, 1);
+				display: block;
+				transform-origin: center center;
+			}
+
+			.zoom-controls {
+				position: absolute;
+				top: 8px;
+				right: 8px;
+				display: flex;
+				flex-direction: column;
+				gap: 6px;
+				z-index: 10;
+			}
+
+			.zoom-btn {
+				background: rgba(0, 0, 0, 0.7);
+				color: white;
+				border: none;
+				width: 36px;
+				height: 36px;
+				border-radius: 50%;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-size: 16px;
+				font-weight: bold;
+				cursor: pointer;
+				transition: all 0.2s ease;
+				touch-action: manipulation;
+			}
+
+			@media (min-width: 640px) {
+				.zoom-controls {
+					top: 16px;
+					right: 16px;
+					gap: 8px;
+				}
+
+				.zoom-btn {
+					width: 40px;
+					height: 40px;
+					font-size: 18px;
+				}
+			}
+
+			.zoom-btn:hover {
+				background: rgba(0, 0, 0, 0.9);
+				transform: scale(1.1);
+			}
+
+			.map-legend {
+				background: rgba(0, 0, 0, 0.8);
+				border: 1px solid rgba(6, 182, 212, 0.3);
+				border-radius: 12px;
+				padding: 16px;
+				backdrop-filter: blur(10px);
+			}
+
+			.legend-item {
+				display: flex;
+				align-items: center;
+				gap: 8px;
+				margin: 4px 0;
+			}
+
+			.legend-color {
+				width: 16px;
+				height: 16px;
+				border-radius: 2px;
+			}
+		</style>
+	</head>
+	<body
+		class="bg-black text-white p-4"
+		style="
+			background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.4)),
+				url('assets/timetable_background.png') center/cover no-repeat
+					fixed;
+		"
+	>
+		<!-- Floating particles background -->
+		<div class="particles" id="particles"></div>
+
+		<!-- Navigation Component -->
+		<div id="navigation-placeholder"></div>
+
+		<!-- Page Title -->
+		<div class="mb-8">
+			<h1
+				class="text-2xl sm:text-3xl pl-6 font-bold mb-3 border-b border-gray-700 pb-2 bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent"
+			>
+				Camp Map
+			</h1>
+		</div>
+
+		<!-- Main Content -->
+		<main class="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
+			<!-- Ticket Type Selector -->
+			<div class="mb-4 sm:mb-6">
+				<div
+					class="bg-gray-800 border border-gray-700 rounded-lg p-3 sm:p-4"
+				>
+					<label
+						for="ticket-type-select"
+						class="block text-sm font-medium text-cyan-400 mb-2"
+					>
+						Select your ticket type to highlight available camping
+						areas:
+					</label>
+					<select
+						id="ticket-type-select"
+						class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 min-h-[44px]"
+						style="font-size: 16px"
+					>
+						<option value="general">General Admission</option>
+						<option value="plus">Plus Camping</option>
+						<option value="eco">Eco Camping</option>
+						<option value="quiet">Quiet Camping</option>
+						<option value="access">Access Camping</option>
+						<option value="rip">RIP Camping</option>
+						<option value="campervan">Campervan</option>
+						<option value="campervan_plus">Campervan Plus</option>
+						<option value="ready_to_rock">Ready to Rock</option>
+						<option value="mini_moshers">Mini Moshers</option>
+					</select>
+				</div>
+			</div>
+
+			<div class="grid lg:grid-cols-4 gap-4 lg:gap-8">
+				<!-- Map -->
+				<div class="lg:col-span-3">
+					<div
+						class="map-container relative h-[50vh] sm:h-[60vh] lg:h-[70vh]"
+						id="map-container"
+					>
+						<!-- Zoom Controls -->
+						<div class="zoom-controls">
+							<button
+								class="zoom-btn"
+								onclick="zoomIn()"
+								title="Zoom In"
+							>
+								+
+							</button>
+							<button
+								class="zoom-btn"
+								onclick="zoomOut()"
+								title="Zoom Out"
+							>
+								−
+							</button>
+							<button
+								class="zoom-btn"
+								onclick="resetZoom()"
+								title="Reset Zoom"
+							>
+								⌂
+							</button>
+						</div>
+
+						<!-- Map Image -->
+						<img
+							id="camp-map-image"
+							src="assets/download-map.jpeg"
+							alt="Download Festival Campsite & Car Park Map"
+							class="map-image"
+						/>
+
+						<!-- Canvas for area highlighting -->
+						<canvas
+							id="map-canvas"
+							style="
+								position: absolute;
+								left: 0;
+								top: 0;
+								width: 100%;
+								height: 100%;
+								pointer-events: none;
+							"
+						></canvas>
+					</div>
+				</div>
+
+				<!-- Legend -->
+				<div class="lg:col-span-1 mt-4 lg:mt-0">
+					<div class="map-legend">
+						<h3
+							class="text-base sm:text-lg font-bold text-cyan-400 mb-3 sm:mb-4"
+						>
+							Camp Areas
+						</h3>
+						<div class="space-y-2 text-sm">
+							<div class="legend-item">
+								<div
+									class="legend-color"
+									style="background-color: #06b6d4"
+								></div>
+								<span>General Camping</span>
+							</div>
+							<div class="legend-item">
+								<div
+									class="legend-color"
+									style="background-color: #f472b6"
+								></div>
+								<span>Plus Camping</span>
+							</div>
+							<div class="legend-item">
+								<div
+									class="legend-color"
+									style="background-color: #22d3ee"
+								></div>
+								<span>Eco Camping</span>
+							</div>
+							<div class="legend-item">
+								<div
+									class="legend-color"
+									style="background-color: #818cf8"
+								></div>
+								<span>Quiet Camping</span>
+							</div>
+							<div class="legend-item">
+								<div
+									class="legend-color"
+									style="background-color: #a3e635"
+								></div>
+								<span>Access Camping</span>
+							</div>
+							<div class="legend-item">
+								<div
+									class="legend-color"
+									style="background-color: #fbbf24"
+								></div>
+								<span>RIP Camping</span>
+							</div>
+							<div class="legend-item">
+								<div
+									class="legend-color"
+									style="background-color: #f97316"
+								></div>
+								<span>Campervan</span>
+							</div>
+							<div class="legend-item">
+								<div
+									class="legend-color"
+									style="background-color: #a855f7"
+								></div>
+								<span>Campervan Plus</span>
+							</div>
+							<div class="legend-item">
+								<div
+									class="legend-color"
+									style="background-color: #ef4444"
+								></div>
+								<span>Ready to Rock</span>
+							</div>
+							<div class="legend-item">
+								<div
+									class="legend-color"
+									style="background-color: #f472b6"
+								></div>
+								<span>Mini Moshers</span>
+							</div>
+						</div>
+
+						<div class="mt-6 pt-4 border-t border-gray-600">
+							<h4
+								class="text-sm font-semibold text-cyan-400 mb-2"
+							>
+								Instructions:
+							</h4>
+							<ul class="text-xs text-gray-300 space-y-1">
+								<li>• Select your ticket type above</li>
+								<li>
+									• Your available areas will be highlighted
+								</li>
+								<li>• Use zoom controls to explore</li>
+								<li>• Drag to pan when zoomed in</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</main>
+
+		<script src="js/menu.js"></script>
+		<script>
+			// Define camp area polygons (image pixel coordinates)
+			const CAMP_AREAS = {
+				plus: [
+					[
+						{x: 1762, y: 981},
+						{x: 1717, y: 862},
+						{x: 1706, y: 806},
+						{x: 1844, y: 646},
+						{x: 1911, y: 691},
+						{x: 1848, y: 769},
+						{x: 1874, y: 762},
+						{x: 1937, y: 777},
+						{x: 1974, y: 739},
+						{x: 2011, y: 758},
+						{x: 2000, y: 777},
+						{x: 2011, y: 795},
+						{x: 2041, y: 810},
+						{x: 2063, y: 799},
+						{x: 2193, y: 873},
+						{x: 2178, y: 918},
+						{x: 1940, y: 907},
+						{x: 1803, y: 1014},
+						{x: 1803, y: 1014},
+						{x: 1758, y: 981},
+					],
+				],
+				eco: [
+					[
+						{x: 1851, y: 981},
+						{x: 1859, y: 1025},
+						{x: 2108, y: 1074},
+						{x: 2175, y: 921},
+						{x: 1937, y: 914},
+					],
+				],
+				general: [
+					[
+						{x: 2346, y: 572},
+						{x: 2119, y: 1077},
+						{x: 2242, y: 1081},
+						{x: 2602, y: 1044},
+						{x: 2598, y: 858},
+						{x: 2565, y: 654},
+						{x: 2502, y: 613},
+						{x: 2468, y: 613},
+						{x: 2416, y: 583},
+					],
+					[
+						{x: 2580, y: 524},
+						{x: 2732, y: 498},
+						{x: 2788, y: 516},
+						{x: 2855, y: 505},
+						{x: 2926, y: 528},
+						{x: 2959, y: 661},
+						{x: 2896, y: 672},
+						{x: 2870, y: 713},
+						{x: 2873, y: 780},
+						{x: 2989, y: 769},
+						{x: 3052, y: 981},
+						{x: 3000, y: 1011},
+						{x: 2781, y: 836},
+						{x: 2769, y: 710},
+						{x: 2580, y: 732},
+						{x: 2569, y: 650},
+						{x: 2598, y: 635},
+					],
+					[
+						{x: 1048, y: 751},
+						{x: 1089, y: 736},
+						{x: 1141, y: 743},
+						{x: 1197, y: 699},
+						{x: 1264, y: 959},
+						{x: 1193, y: 1044},
+						{x: 1178, y: 1115},
+						{x: 1230, y: 1148},
+						{x: 1245, y: 1185},
+						{x: 1312, y: 1230},
+						{x: 1238, y: 1427},
+						{x: 1197, y: 1393},
+						{x: 1097, y: 1122},
+					],
+					[
+						{x: 1279, y: 1341},
+						{x: 1595, y: 1438},
+						{x: 1509, y: 1635},
+						{x: 1405, y: 1612},
+						{x: 1427, y: 1546},
+						{x: 1238, y: 1438},
+					],
+					[
+						{x: 2836, y: 1011},
+						{x: 2944, y: 1100},
+						{x: 2859, y: 1170},
+						{x: 2877, y: 1189},
+						{x: 3015, y: 1260},
+						{x: 2981, y: 1274},
+						{x: 2866, y: 1267},
+						{x: 2821, y: 1234},
+						{x: 2799, y: 1215},
+						{x: 2636, y: 1063},
+						{x: 2669, y: 1025},
+						{x: 2721, y: 1040},
+						{x: 2743, y: 1063},
+					],
+				],
+				quiet: [
+					[
+						{x: 1041, y: 747},
+						{x: 1085, y: 1059},
+						{x: 769, y: 1092},
+						{x: 695, y: 1092},
+						{x: 643, y: 862},
+					],
+				],
+				access: [
+					[
+						{x: 2320, y: 1746},
+						{x: 2305, y: 1854},
+						{x: 2305, y: 1943},
+						{x: 2331, y: 1947},
+						{x: 2238, y: 2229},
+						{x: 2011, y: 2159},
+						{x: 2123, y: 1902},
+						{x: 2145, y: 1880},
+						{x: 2137, y: 1854},
+						{x: 2089, y: 1821},
+						{x: 2082, y: 1783},
+					],
+				],
+				rip: [
+					[
+						{x: 1067, y: 1754},
+						{x: 1171, y: 1817},
+						{x: 1256, y: 1713},
+						{x: 1543, y: 1761},
+						{x: 1602, y: 1757},
+						{x: 1803, y: 1731},
+						{x: 1821, y: 1798},
+						{x: 2030, y: 1772},
+						{x: 2045, y: 1809},
+						{x: 2100, y: 1873},
+						{x: 2108, y: 1895},
+						{x: 1985, y: 2170},
+						{x: 1870, y: 2118},
+						{x: 1814, y: 2237},
+						{x: 1710, y: 2385},
+						{x: 1639, y: 2437},
+						{x: 1624, y: 2452},
+						{x: 1584, y: 2452},
+						{x: 1513, y: 2385},
+						{x: 1372, y: 2300},
+						{x: 1387, y: 2252},
+						{x: 1063, y: 2051},
+						{x: 1067, y: 2021},
+						{x: 911, y: 1958},
+					],
+				],
+				campervan: [
+					[
+						{x: 3030, y: 2356},
+						{x: 2937, y: 2330},
+						{x: 2840, y: 2389},
+						{x: 2743, y: 2344},
+						{x: 2621, y: 2300},
+						{x: 2769, y: 2188},
+						{x: 2892, y: 2133},
+						{x: 3007, y: 2088},
+						{x: 3093, y: 2066},
+						{x: 3405, y: 2043},
+						{x: 3416, y: 2084},
+						{x: 3342, y: 2125},
+						{x: 3264, y: 2181},
+						{x: 3186, y: 2248},
+						{x: 3123, y: 2296},
+					],
+				],
+				campervan_plus: [
+					[
+						{x: 2795, y: 1512},
+						{x: 2795, y: 1460},
+						{x: 2821, y: 1438},
+						{x: 3071, y: 1401},
+						{x: 3137, y: 1427},
+						{x: 3189, y: 1453},
+						{x: 3264, y: 1464},
+						{x: 3290, y: 1516},
+						{x: 3275, y: 1575},
+						{x: 2836, y: 1538},
+					],
+				],
+				ready_to_rock: [
+					[
+						{x: 2468, y: 1300},
+						{x: 2483, y: 1364},
+						{x: 2717, y: 1423},
+						{x: 2807, y: 1375},
+						{x: 2636, y: 1334},
+					],
+				],
+				mini_moshers: [
+					[
+						{x: 770, y: 1098},
+						{x: 1088, y: 1058},
+						{x: 1098, y: 1118},
+						{x: 903, y: 1145},
+						{x: 904, y: 1102},
+					],
+				],
+			};
+
+			// Map ticket types to allowed areas
+			const TICKET_AREAS = {
+				general: ["general"],
+				access: ["access"],
+				rip: ["rip"],
+				eco: ["eco"],
+				quiet: ["quiet"],
+				plus: ["plus"],
+				ready_to_rock: ["ready_to_rock"],
+				campervan: ["campervan"],
+				campervan_plus: ["campervan_plus"],
+				mini_moshers: ["mini_moshers"],
+			};
+
+			let currentZoom = 1;
+			const maxZoom = 3;
+			const minZoom = 1;
+			const zoomStep = 0.5;
+
+			const mapImage = document.getElementById("camp-map-image");
+			const mapCanvas = document.getElementById("map-canvas");
+			const mapContainer = document.getElementById("map-container");
+			const ticketSelect = document.getElementById("ticket-type-select");
+
+			let isDragging = false;
+			let startX = 0;
+			let startY = 0;
+			let translateX = 0;
+			let translateY = 0;
+
+			// Create particles background - exactly like index page
+			function createParticles() {
+				const particlesContainer = document.getElementById("particles");
+				for (let i = 0; i < 20; i++) {
+					const particle = document.createElement("div");
+					particle.className = "particle";
+					particle.style.left = Math.random() * 100 + "%";
+					particle.style.animationDelay = Math.random() * 8 + "s";
+					particle.style.animationDuration =
+						8 + Math.random() * 4 + "s";
+					particlesContainer.appendChild(particle);
+				}
+			}
+
+			// Canvas functions for area highlighting
+			function resizeCanvasToImage() {
+				if (!mapImage.complete) return;
+				mapCanvas.width = mapImage.naturalWidth;
+				mapCanvas.height = mapImage.naturalHeight;
+				mapCanvas.style.width = mapImage.offsetWidth + "px";
+				mapCanvas.style.height = mapImage.offsetHeight + "px";
+			}
+
+			function areaColor(area) {
+				switch (area) {
+					case "general":
+						return "#06b6d4";
+					case "access":
+						return "#a3e635";
+					case "rip":
+						return "#fbbf24";
+					case "eco":
+						return "#22d3ee";
+					case "quiet":
+						return "#818cf8";
+					case "plus":
+						return "#f472b6";
+					case "mini_moshers":
+						return "#f472b6";
+					case "campervan":
+						return "#f97316";
+					case "campervan_plus":
+						return "#a855f7";
+					case "ready_to_rock":
+						return "#ef4444";
+					default:
+						return "#fff";
+				}
+			}
+
+			// Draw highlights for allowed areas
+			function drawHighlights() {
+				if (mapCanvas.style.opacity === "0") return; // Don't draw if hidden for zoom
+				const ctx = mapCanvas.getContext("2d");
+				ctx.clearRect(0, 0, mapCanvas.width, mapCanvas.height);
+				const ticket = ticketSelect.value;
+				const allowed = TICKET_AREAS[ticket] || [];
+
+				// Draw each allowed area with a bold, glowing style
+				allowed.forEach((area) => {
+					(CAMP_AREAS[area] || []).forEach((poly) => {
+						ctx.save();
+						ctx.globalAlpha = 0.7; // More opaque
+						ctx.shadowColor = areaColor(area);
+						ctx.shadowBlur = 32; // Glow effect
+						ctx.fillStyle = areaColor(area);
+						ctx.beginPath();
+						poly.forEach((pt, i) => {
+							if (i === 0) ctx.moveTo(pt.x, pt.y);
+							else ctx.lineTo(pt.x, pt.y);
+						});
+						ctx.closePath();
+						ctx.fill();
+						ctx.shadowBlur = 0;
+						ctx.globalAlpha = 1;
+						// Add a thick white border for definition
+						ctx.lineWidth = 10;
+						ctx.strokeStyle = "#fff";
+						ctx.stroke();
+						// Add a colored border for the area
+						ctx.lineWidth = 4;
+						ctx.strokeStyle = areaColor(area);
+						ctx.stroke();
+						// Add a bright red border for extra definition
+						ctx.lineWidth = 2.5;
+						ctx.strokeStyle = "#ff1744"; // Bright red
+						ctx.stroke();
+						ctx.restore();
+					});
+				});
+			}
+
+			// Sync canvas with image size and zoom
+			function syncCanvas() {
+				resizeCanvasToImage();
+				drawHighlights();
+			}
+
+			// Initialize canvas
+			function initCanvas() {
+				syncCanvas();
+			}
+
+			// Zoom functions
+			function zoomIn() {
+				if (currentZoom < maxZoom) {
+					currentZoom += zoomStep;
+					updateZoom();
+				}
+			}
+
+			function zoomOut() {
+				if (currentZoom > minZoom) {
+					currentZoom -= zoomStep;
+					updateZoom();
+				}
+			}
+
+			function resetZoom() {
+				currentZoom = 1;
+				translateX = 0;
+				translateY = 0;
+				updateZoom();
+			}
+
+			function updateZoom() {
+				mapImage.style.transform = `scale(${currentZoom}) translate(${translateX}px, ${translateY}px)`;
+
+				// Limit translation based on zoom level
+				const maxTranslate = (currentZoom - 1) * 100;
+				translateX = Math.max(
+					-maxTranslate,
+					Math.min(maxTranslate, translateX)
+				);
+				translateY = Math.max(
+					-maxTranslate,
+					Math.min(maxTranslate, translateY)
+				);
+			}
+
+			// Mouse drag functionality
+			mapImage.addEventListener("mousedown", (e) => {
+				if (currentZoom > 1) {
+					isDragging = true;
+					startX = e.clientX - translateX;
+					startY = e.clientY - translateY;
+					mapContainer.style.cursor = "grabbing";
+					e.preventDefault();
+				}
+			});
+
+			document.addEventListener("mousemove", (e) => {
+				if (isDragging && currentZoom > 1) {
+					translateX = e.clientX - startX;
+					translateY = e.clientY - startY;
+					updateZoom();
+				}
+			});
+
+			document.addEventListener("mouseup", () => {
+				if (isDragging) {
+					isDragging = false;
+					mapContainer.style.cursor = "grab";
+				}
+			});
+
+			// Touch drag functionality
+			let initialTouchDistance = 0;
+			let initialZoom = 1;
+			let touchStartX = 0;
+			let touchStartY = 0;
+
+			mapImage.addEventListener("touchstart", (e) => {
+				if (e.touches.length === 1 && currentZoom > 1) {
+					// Single touch for dragging
+					isDragging = true;
+					touchStartX = e.touches[0].clientX - translateX;
+					touchStartY = e.touches[0].clientY - translateY;
+				} else if (e.touches.length === 2) {
+					// Two touches for pinch zoom
+					e.preventDefault();
+					const touch1 = e.touches[0];
+					const touch2 = e.touches[1];
+					initialTouchDistance = Math.hypot(
+						touch2.clientX - touch1.clientX,
+						touch2.clientY - touch1.clientY
+					);
+					initialZoom = currentZoom;
+					isDragging = false;
+				}
+			});
+
+			mapImage.addEventListener("touchmove", (e) => {
+				if (e.touches.length === 1 && isDragging && currentZoom > 1) {
+					// Single touch drag
+					e.preventDefault();
+					translateX = e.touches[0].clientX - touchStartX;
+					translateY = e.touches[0].clientY - touchStartY;
+					updateZoom();
+				} else if (e.touches.length === 2) {
+					// Pinch zoom
+					e.preventDefault();
+					const touch1 = e.touches[0];
+					const touch2 = e.touches[1];
+					const distance = Math.hypot(
+						touch2.clientX - touch1.clientX,
+						touch2.clientY - touch1.clientY
+					);
+
+					const scale = distance / initialTouchDistance;
+					const newZoom = Math.max(
+						minZoom,
+						Math.min(maxZoom, initialZoom * scale)
+					);
+
+					if (Math.abs(newZoom - currentZoom) > 0.1) {
+						currentZoom = newZoom;
+						updateZoom();
+					}
+				}
+			});
+
+			mapImage.addEventListener("touchend", () => {
+				isDragging = false;
+			});
+
+			// Mouse wheel zoom
+			mapImage.addEventListener("wheel", (e) => {
+				e.preventDefault();
+
+				if (e.deltaY < 0) {
+					zoomIn();
+				} else {
+					zoomOut();
+				}
+			});
+
+			// Keyboard shortcuts
+			document.addEventListener("keydown", (e) => {
+				switch (e.key) {
+					case "+":
+					case "=":
+						e.preventDefault();
+						zoomIn();
+						break;
+					case "-":
+						e.preventDefault();
+						zoomOut();
+						break;
+					case "0":
+						e.preventDefault();
+						resetZoom();
+						break;
+					case "Escape":
+						window.location.href = "index.html";
+						break;
+				}
+			});
+
+			// Hide highlights when zooming (hovering)
+			if (mapImage && mapCanvas) {
+				mapImage.addEventListener("mouseenter", () => {
+					mapCanvas.style.opacity = "0";
+				});
+				mapImage.addEventListener("mouseleave", () => {
+					mapCanvas.style.opacity = "1";
+					drawHighlights();
+				});
+			}
+
+			// Redraw on ticket change
+			if (ticketSelect) {
+				ticketSelect.addEventListener("change", drawHighlights);
+			}
+
+			// Redraw on image load/resize
+			if (mapImage) {
+				mapImage.addEventListener("load", syncCanvas);
+				window.addEventListener("resize", syncCanvas);
+				// If already loaded
+				if (mapImage.complete) setTimeout(syncCanvas, 100);
+			}
+
+			// Initialize particles when page loads - exactly like index page
+			document.addEventListener("DOMContentLoaded", function () {
+				createParticles();
+				initCanvas();
+				// Initial draw of highlights
+				setTimeout(drawHighlights, 200);
+			});
+
+			window.addEventListener("resize", () => {
+				syncCanvas();
+			});
+		</script>
+
+		<!-- Initialize Navigation -->
+		<script>
+			document.addEventListener("DOMContentLoaded", function () {
+				import("./js/navigation.js").then((module) => {
+					const NavigationComponent = module.default;
+					const navigation = new NavigationComponent();
+					navigation.init("#navigation-placeholder");
+				});
+			});
+		</script>
+	</body>
+</html>

@@ -39,9 +39,11 @@ import {
 	populateArenaStageDropdown,
 } from "./js/dropdowns.js";
 import {setupShareFavoritesButton, tryImportSharedFavorites} from "./js/ui.js";
+import {showDaySelectionModal} from "./js/timetable.js";
 
 // Export functions to window for backward compatibility with inline event handlers
 window.showDay = showDay;
+window.showDaySelectionModal = showDaySelectionModal;
 window.showDistrictXDay = showDistrictXDay;
 window.filterStage = filterStage;
 window.filterDistrictXStage = filterDistrictXStage;
@@ -57,6 +59,124 @@ window.populateDistrictXStageDropdown = populateDistrictXStageDropdown;
 window.populateArenaStageDropdown = populateArenaStageDropdown;
 window.showFavoritesOnly = showFavoritesOnly;
 window.toggleFavoriteSet = toggleFavoriteSet;
+
+// --- Now Playing ---
+
+document.addEventListener('DOMContentLoaded', () => {
+    let bandSchedule = []; // Initialize as an empty array
+    const stagesContainerElem = document.getElementById('stagesContainer'); // New element to target
+    const lastUpdatedElem = document.getElementById('lastUpdated');
+
+    let currentPlayingBandsPerStage = {}; // Object to track current bands per stage to detect changes
+
+    function formatTime(dateString) {
+        const options = { hour: '2-digit', minute: '2-digit', hour12: false };
+        return new Date(dateString).toLocaleTimeString('en-GB', options);
+    }
+
+    function updateStageDisplays() {
+        const now = new Date();
+        const stagesData = {}; // Object to hold currently playing and next up for each stage
+
+        // Group and sort bands by stage
+        bandSchedule.forEach(band => {
+            if (!stagesData[band.stage]) {
+                stagesData[band.stage] = {
+                    currentlyPlaying: null,
+                    upNext: null,
+                    bands: [] // Store all bands for the stage to sort later
+                };
+            }
+            stagesData[band.stage].bands.push(band);
+        });
+
+        // Process each stage
+        Object.keys(stagesData).sort().forEach(stageName => { // Sort stage names for consistent display order
+            const stage = stagesData[stageName];
+            stage.bands.sort((a, b) => new Date(a.startTime) - new Date(b.startTime)); // Sort bands within the stage by time
+
+            let foundCurrentForStage = null;
+            let foundNextForStage = null;
+
+            for (let i = 0; i < stage.bands.length; i++) {
+                const band = stage.bands[i];
+                const startTime = new Date(band.startTime);
+                const endTime = new Date(band.endTime);
+
+                if (now >= startTime && now < endTime) {
+                    foundCurrentForStage = band;
+                    // Find the very next band for this stage
+                    if (i + 1 < stage.bands.length) {
+                        foundNextForStage = stage.bands[i + 1];
+                    }
+                    break; // Found current band for this stage, move to next stage
+                } else if (now < startTime) {
+                    // If no band is currently playing on this stage, the first upcoming band is 'up next'
+                    foundNextForStage = band;
+                    break; // Found the next upcoming, no need to check further for this stage
+                }
+            }
+
+            stage.currentlyPlaying = foundCurrentForStage;
+            stage.upNext = foundNextForStage;
+        });
+
+        // Now, render or update the HTML based on stagesData
+        renderStageDisplays(stagesData);
+
+        lastUpdatedElem.textContent = new Date().toLocaleTimeString('en-GB');
+    }
+
+    function renderStageDisplays(stagesData) {
+        stagesContainerElem.innerHTML = ''; // Clear previous content
+
+        // Sort stage names for consistent order
+        const sortedStageNames = Object.keys(stagesData).sort();
+
+        sortedStageNames.forEach(stageName => {
+            const stage = stagesData[stageName];
+
+            const stageDiv = document.createElement('div');
+            stageDiv.classList.add('stage-section'); // Add a class for styling
+            stageDiv.innerHTML = `
+                <h2>${stageName}</h2>
+                <div class="stage-info">
+                    <h3>Currently Playing:</h3>
+                    <p>Artist: <span class="current-artist">${stage.currentlyPlaying ? stage.currentlyPlaying.artist : 'No band currently playing.'}</span></p>
+                    <p>Time: <span class="current-time">${stage.currentlyPlaying ? `${formatTime(stage.currentlyPlaying.startTime)} - ${formatTime(stage.currentlyPlaying.endTime)}` : ''}</span></p>
+                </div>
+                <div class="stage-info">
+                    <h3>Up Next:</h3>
+                    <p>Artist: <span class="next-artist">${stage.upNext ? stage.upNext.artist : 'No upcoming bands.'}</span></p>
+                    <p>Time: <span class="next-time">${stage.upNext ? `${formatTime(stage.upNext.startTime)} - ${formatTime(stage.upNext.endTime)}` : ''}</span></p>
+                </div>
+            `;
+            stagesContainerElem.appendChild(stageDiv);
+        });
+    }
+
+
+    async function loadBandSchedule() {
+        try {
+            const response = await fetch('set-times.json');
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            bandSchedule = await response.json();
+            console.log('Band schedule loaded:', bandSchedule);
+            updateStageDisplays(); // Initial display after data is loaded
+        } catch (error) {
+            console.error('Error loading band schedule:', error);
+            stagesContainerElem.innerHTML = '<p>Error loading schedule. Please refresh the page.</p>';
+        }
+    }
+
+    // Load the schedule when the page loads
+    loadBandSchedule();
+
+    // Update every 5 seconds (5000 milliseconds)
+    setInterval(updateStageDisplays, 5000);
+});
 
 // --- Download Festival Weather Forecast ---
 async function fetchWeather() {
@@ -157,13 +277,20 @@ function renderWeather(forecast) {
 		const icon = getWeatherIcon(code);
 		const div = document.createElement("div");
 		div.className =
-			"flex flex-col items-center bg-gray-900 rounded p-2 min-w-[60px]";
+			"weather-card flex flex-col items-center bg-gradient-to-b from-gray-800/80 to-gray-900/80 backdrop-blur-sm rounded-xl p-3 min-w-[80px] border border-cyan-500/20 hover:border-cyan-400/40 transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/20 hover:scale-105";
 		div.innerHTML = `
-			<span class="font-bold text-cyan-400">${day}</span>
-			<span class="text-2xl">${icon}</span>
-			<span class="text-xs">High: ${max}°C</span>
-			<span class="text-xs">Low: ${min}°C</span>
-			<span class="text-xs text-blue-300">${rain}mm</span>
+			<span class="font-bold text-cyan-300 mb-1 text-sm">${day}</span>
+			<span class="text-3xl mb-2">${icon}</span>
+			<div class="text-center space-y-1">
+				<div class="flex flex-col">
+					<span class="text-xs text-orange-300">High: ${max}°C</span>
+					<span class="text-xs text-blue-300">Low: ${min}°C</span>
+				</div>
+				<div class="flex items-center justify-center gap-1 text-xs text-blue-400">
+					<span>💧</span>
+					<span>${rain}mm</span>
+				</div>
+			</div>
 		`;
 		container.appendChild(div);
 	}
@@ -395,6 +522,15 @@ const CAMP_AREAS = {
 			{x: 2636, y: 1334},
 		],
 	],
+	mini_moshers: [
+		[
+			{x: 770, y: 1098},
+			{x: 1088, y: 1058},
+			{x: 1098, y: 1118},
+			{x: 903, y: 1145},
+			{x: 904, y: 1102},
+		],
+	],
 };
 
 // Map ticket types to allowed areas
@@ -408,6 +544,7 @@ const TICKET_AREAS = {
 	ready_to_rock: ["ready_to_rock"],
 	campervan: ["campervan"],
 	campervan_plus: ["campervan_plus"],
+	mini_moshers: ["mini_moshers"],
 };
 
 const mapImage = document.getElementById("map-image");
@@ -476,6 +613,8 @@ function areaColor(area) {
 		case "quiet":
 			return "#818cf8";
 		case "plus":
+			return "#f472b6";
+		case "mini_moshers":
 			return "#f472b6";
 		default:
 			return "#fff";

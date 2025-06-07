@@ -7,195 +7,112 @@
 		<script src="https://cdn.tailwindcss.com"></script>
 		<link rel="stylesheet" href="styles.css" />
 		<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+		<script type="module" src="js/navigation.js"></script>
 		<script type="module" src="js/ui.js"></script>
 		<script type="module" src="js/countdown.js"></script>
 		<script type="module" src="script.js"></script>
 		<script type="module" src="js/menu.js"></script>
 		<script type="module" src="js/timetable.js"></script>
+		<script>
+			// Initialize navigation component
+			document.addEventListener("DOMContentLoaded", function () {
+				import("./js/navigation.js").then((module) => {
+					const NavigationComponent = module.default;
+					const nav = new NavigationComponent();
+					nav.init("#navigation-placeholder");
+				});
+			});
+		</script>
+		<style>
+			/* Floating particles background */
+			.particles {
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				pointer-events: none;
+				z-index: 0;
+			}
+
+			.particle {
+				position: absolute;
+				width: 2px;
+				height: 2px;
+				background: #00ffc3;
+				border-radius: 50%;
+				animation: float-particle 8s infinite ease-in-out;
+				opacity: 0.3;
+			}
+
+			@keyframes float-particle {
+				0%,
+				100% {
+					transform: translateY(100vh) translateX(0) scale(0.5);
+					opacity: 0;
+				}
+				50% {
+					opacity: 0.8;
+					transform: translateY(0) translateX(50px) scale(1);
+				}
+			}
+
+			/* Weather section enhancements */
+			.weather-container {
+				position: relative;
+				z-index: 1;
+			}
+
+			.weather-container::before {
+				content: "";
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				background: linear-gradient(
+					45deg,
+					transparent,
+					rgba(0, 255, 195, 0.05),
+					transparent
+				);
+				border-radius: 0.75rem;
+				z-index: -1;
+			}
+
+			/* Loading spinner styling */
+			.loading-spinner {
+				width: 20px;
+				height: 20px;
+				border: 2px solid rgba(0, 255, 195, 0.3);
+				border-top: 2px solid #00ffc3;
+				border-radius: 50%;
+				animation: spin 1s linear infinite;
+			}
+
+			@keyframes spin {
+				0% {
+					transform: rotate(0deg);
+				}
+				100% {
+					transform: rotate(360deg);
+				}
+			}
+		</style>
 	</head>
-	<body class="bg-black text-white p-4">
-		<header
-			class="flex flex-wrap items-center justify-between gap-2 mb-4 sm:mb-6 header-flex"
-		>
-			<div class="flex items-center gap-2 sm:gap-3 header-logo">
-				<img
-					src="assets/downloadlogo.svg"
-					alt="Download Festival"
-					class="h-8 sm:h-12"
-				/>
-				<h1 class="text-xl sm:text-2xl font-bold">Schedule</h1>
-			</div>
-			<div class="timer-container">
-				<div class="timer-unit">
-					<div class="timer-number" id="days">00</div>
-					<div class="timer-label">DAYS</div>
-				</div>
-				<div class="timer-unit">
-					<div class="timer-number" id="hours">00</div>
-					<div class="timer-label">HRS</div>
-				</div>
-				<div class="timer-unit">
-					<div class="timer-number" id="minutes">00</div>
-					<div class="timer-label">MINS</div>
-				</div>
-			</div>
+	<body
+		class="bg-black text-white p-4"
+		style="
+			background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.4)),
+				url('assets/timetable_background.png') center/cover no-repeat
+					fixed;
+		"
+	>
+		<!-- Floating particles background -->
+		<div class="particles" id="particles"></div>
 
-			<!-- Menu Button -->
-			<button
-				id="menu-toggle-btn"
-				class="bg-cyan-700 hover:bg-cyan-600 text-white py-1 sm:py-2 px-2 sm:px-4 rounded text-sm sm:text-base flex items-center"
-			>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					class="h-6 w-6"
-					fill="none"
-					viewBox="0 0 24 24"
-					stroke="currentColor"
-				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M4 6h16M4 12h16M4 18h16"
-					/>
-				</svg>
-				<span class="hidden xs:inline ml-2">Menu</span>
-			</button>
-		</header>
-
-		<!-- Side Menu Overlay -->
-		<div class="menu-overlay" id="menu-overlay"></div>
-
-		<!-- Side Menu -->
-		<div class="side-menu" id="side-menu">
-			<div class="p-4 border-b border-gray-700">
-				<div class="flex justify-between items-center">
-					<h2 class="text-lg font-bold text-cyan-400">
-						Download Festival
-					</h2>
-					<button
-						class="menu-close-btn text-gray-400 hover:text-white"
-						id="menu-close-btn"
-					>
-						&times;
-					</button>
-				</div>
-			</div>
-
-			<nav class="mt-4">
-				<a
-					href="index.html"
-					class="menu-item active"
-					id="menu-item-timetable"
-				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						class="h-5 w-5 text-cyan-400"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-						/>
-					</svg>
-					<span>Schedule</span>
-				</a>
-
-				<!-- <a href="vendors.html" class="menu-item" id="menu-item-food">
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						class="h-5 w-5 text-cyan-400"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-						/>
-					</svg>
-					Food & Activities
-				</a> -->
-
-				<button class="menu-item index-only" id="menu-favorites">
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						class="h-5 w-5 text-cyan-400"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-						/>
-					</svg>
-					<span>My Artists</span>
-				</button>
-
-				<button class="menu-item index-only" id="menu-poster-generate">
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						class="h-5 w-5 text-cyan-400"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-						/>
-					</svg>
-					<span>Generate Poster</span>
-				</button>
-
-				<button class="menu-item index-only" id="menu-timetable-generate">
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						class="h-5 w-5 text-cyan-400"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-						/>
-					</svg>
-					<span>Generate Timetable Wallpaper</span>
-				</button>
-
-				<button class="menu-item index-only" id="menu-map-btn">
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						class="h-5 w-5 text-cyan-400"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-					>
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							stroke-width="2"
-							d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"
-						/>
-					</svg>
-					<span>Camp Map</span>
-				</button>
-			</nav>
-		</div>
+		<!-- Navigation will be injected here by navigation.js -->
+		<div id="navigation-placeholder"></div>
 
 		<!-- Artist Favorites Modal -->
 		<div
@@ -255,32 +172,52 @@
 				</div>
 			</div>
 		</div>
+		<div class="container">
+    <h2>Festival Schedule by Stage</h2>
+
+    <div id="stagesContainer">
+        Loading schedules...
+    </div>
+
+    <p class="last-updated">Last Updated: <span id="lastUpdated"></span></p>
+</div>
 
 		<!-- Arena Bands Section -->
 		<div class="mb-8">
-			<h2 class="text-xl font-bold mb-3 border-b border-gray-700 pb-2">
-				Arena Bands
-			</h2>
+			
 			<!-- Weather forecast section -->
-			<div class="weather-container mb-4 p-3 rounded-lg bg-gray-800">
-				<h3 class="text-sm font-bold mb-2 text-cyan-500">
-					Festival Weather
-				</h3>
-				<div class="flex flex-wrap gap-3" id="weather-forecast">
+			<div
+				class="weather-container mb-4 sm:mb-6 p-3 sm:p-4 rounded-xl bg-gradient-to-r from-gray-900/90 to-gray-800/90 backdrop-blur-sm border border-cyan-500/20 shadow-lg shadow-cyan-500/10"
+			>
+				<div class="flex items-center gap-2 mb-3">
+					<span class="text-base sm:text-lg">🌤️</span>
+					<h3 class="text-base sm:text-lg font-bold text-cyan-400">
+						Festival Weather
+					</h3>
+				</div>
+				<div
+					class="flex flex-wrap gap-2 sm:gap-3"
+					id="weather-forecast"
+				>
 					<div class="loading-spinner"></div>
-					<span class="text-sm">Loading weather...</span>
+					<span class="text-xs sm:text-sm">Loading weather...</span>
 				</div>
 			</div>
 
 			<!-- Mobile UI (visible only on small screens) -->
-			<div class="block md:hidden mb-4">
+			<div class="block md:hidden mb-4 space-y-3">
 				<!-- Stage Selector Dropdown (Mobile) -->
-				<div class="relative inline-block text-left w-full mb-3">
+				<h2 class="text-xl font-bold mb-3 border-b border-gray-700 pb-2">
+				Arena Bands
+			</h2>
+			<div class="relative inline-block text-left w-full">
 					<button
 						id="stage-dropdown-btn-mobile"
-						class="bg-cyan-600 px-4 py-2 rounded flex items-center justify-between w-full"
+						class="bg-cyan-600 hover:bg-cyan-700 px-4 py-3 rounded-lg flex items-center justify-between w-full min-h-[44px] transition-colors"
 					>
-						<span id="current-stage-mobile">All Stages</span>
+						<span id="current-stage-mobile" class="font-medium"
+							>All Stages</span
+						>
 						<svg
 							class="w-4 h-4 ml-2 transition-transform duration-300"
 							fill="none"
@@ -310,9 +247,11 @@
 				<div class="relative inline-block text-left w-full">
 					<button
 						id="day-dropdown-btn-mobile"
-						class="bg-cyan-600 px-4 py-2 rounded flex items-center justify-between w-full"
+						class="bg-cyan-600 hover:bg-cyan-700 px-4 py-3 rounded-lg flex items-center justify-between w-full min-h-[44px] transition-colors"
 					>
-						<span id="current-day-mobile">Friday</span>
+						<span id="current-day-mobile" class="font-medium"
+							>Friday</span
+						>
 						<svg
 							class="w-4 h-4 ml-2"
 							fill="none"
@@ -335,21 +274,21 @@
 						<div class="py-1" role="menu">
 							<button
 								onclick="showDay('friday'); updateMobileDayText('Friday');"
-								class="block w-full text-left px-4 py-2 text-sm text-white hover:bg-gray-700"
+								class="block w-full text-left px-4 py-3 text-sm text-white hover:bg-gray-700 transition-colors"
 								role="menuitem"
 							>
 								Friday
 							</button>
 							<button
 								onclick="showDay('saturday'); updateMobileDayText('Saturday');"
-								class="block w-full text-left px-4 py-2 text-sm text-white hover:bg-gray-700"
+								class="block w-full text-left px-4 py-3 text-sm text-white hover:bg-gray-700 transition-colors"
 								role="menuitem"
 							>
 								Saturday
 							</button>
 							<button
 								onclick="showDay('sunday'); updateMobileDayText('Sunday');"
-								class="block w-full text-left px-4 py-2 text-sm text-white hover:bg-gray-700"
+								class="block w-full text-left px-4 py-3 text-sm text-white hover:bg-gray-700 transition-colors"
 								role="menuitem"
 							>
 								Sunday
@@ -357,68 +296,76 @@
 						</div>
 					</div>
 				</div>
-			</div>
 
-			<!-- My Artists Toggle (Mobile) -->
-			<div class="flex items-center justify-end mb-4 md:hidden">
-				<span class="text-sm mr-2">My Artists Only</span>
-				<label class="switch">
-					<input
-						type="checkbox"
-						id="global-favorites-toggle-mobile"
-					/>
-					<span class="slider round"></span>
-				</label>
-			</div>
+				<!-- Control toggles row for mobile -->
+				<div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
+					<!-- My Artists Toggle (Mobile) -->
+					<div
+						class="flex items-center justify-between bg-gray-800 rounded-lg p-3"
+					>
+						<span class="text-sm font-medium">My Artists Only</span>
+						<label class="switch">
+							<input
+								type="checkbox"
+								id="global-favorites-toggle-mobile"
+							/>
+							<span class="slider round"></span>
+						</label>
+					</div>
 
-			<!-- View Mode Toggle (Mobile) -->
-			<div class="flex items-center justify-end mb-4 md:hidden">
-				<div class="inline-flex bg-gray-700 rounded">
-					<button
-						id="list-view-btn-mobile"
-						class="px-3 py-1 rounded-l text-white"
+					<!-- View Mode Toggle (Mobile) -->
+					<div
+						class="flex items-center justify-between bg-gray-800 rounded-lg p-3"
 					>
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							class="h-4 w-4"
-							fill="none"
-							viewBox="0 0 24 24"
-							stroke="currentColor"
-						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M4 6h16M4 12h16M4 18h16"
-							/>
-						</svg>
-					</button>
-					<button
-						id="timeline-view-btn-mobile"
-						class="px-3 py-1 rounded-r bg-cyan-600 text-white"
-					>
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							class="h-4 w-4"
-							fill="none"
-							viewBox="0 0 24 24"
-							stroke="currentColor"
-						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-							/>
-						</svg>
-					</button>
+						<span class="text-sm font-medium">View Mode</span>
+						<div class="inline-flex bg-gray-700 rounded-lg">
+							<button
+								id="list-view-btn-mobile"
+								class="px-3 py-2 rounded-l-lg text-white transition-colors"
+							>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									class="h-4 w-4"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke="currentColor"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M4 6h16M4 12h16M4 18h16"
+									/>
+								</svg>
+							</button>
+							<button
+								id="timeline-view-btn-mobile"
+								class="px-3 py-2 rounded-r-lg bg-cyan-600 text-white transition-colors"
+							>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									class="h-4 w-4"
+									fill="none"
+									viewBox="0 0 24 24"
+									stroke="currentColor"
+								>
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+									/>
+								</svg>
+							</button>
+						</div>
+						<input
+							type="checkbox"
+							id="view-mode-toggle-mobile"
+							class="hidden"
+							checked
+						/>
+					</div>
 				</div>
-				<input
-					type="checkbox"
-					id="view-mode-toggle-mobile"
-					class="hidden"
-					checked
-				/>
 			</div>
 
 			<!-- Desktop UI (hidden on mobile) -->
@@ -446,10 +393,7 @@
 				</div>
 				<div class="flex items-center justify-between mb-4">
 					<!-- Existing stage buttons will be here -->
-					<div
-						id="stage-buttons"
-						class="flex gap-2 overflow-x-auto"
-					></div>
+					<div id="stage-buttons" class="flex gap-2 flex-wrap"></div>
 
 					<!-- My Artists Toggle (Desktop) and View Toggle -->
 					<div class="flex items-center ml-4 gap-4">
@@ -531,14 +475,16 @@
 			</h2>
 
 			<!-- Mobile UI for District X (visible only on small screens) -->
-			<div class="block md:hidden mb-4">
+			<div class="block md:hidden mb-4 space-y-3">
 				<!-- Stage Selector Dropdown (Mobile) -->
-				<div class="relative inline-block text-left w-full mb-3">
+				<div class="relative inline-block text-left w-full">
 					<button
 						id="districtx-stage-dropdown-btn-mobile"
-						class="bg-cyan-600 px-4 py-2 rounded flex items-center justify-between w-full"
+						class="bg-cyan-600 hover:bg-cyan-700 px-4 py-3 rounded-lg flex items-center justify-between w-full min-h-[44px] transition-colors"
 					>
-						<span id="districtx-current-stage-mobile"
+						<span
+							id="districtx-current-stage-mobile"
+							class="font-medium"
 							>All Stages</span
 						>
 						<svg
@@ -570,9 +516,13 @@
 				<div class="relative inline-block text-left w-full">
 					<button
 						id="districtx-day-dropdown-btn-mobile"
-						class="bg-cyan-600 px-4 py-2 rounded flex items-center justify-between w-full"
+						class="bg-cyan-600 hover:bg-cyan-700 px-4 py-3 rounded-lg flex items-center justify-between w-full min-h-[44px] transition-colors"
 					>
-						<span id="districtx-current-day-mobile">Wednesday</span>
+						<span
+							id="districtx-current-day-mobile"
+							class="font-medium"
+							>Wednesday</span
+						>
 						<svg
 							class="w-4 h-4 ml-2"
 							fill="none"
@@ -595,35 +545,35 @@
 						<div class="py-1" role="menu">
 							<button
 								onclick="showDistrictXDay('wednesday'); updateDistrictXMobileDayText('Wednesday');"
-								class="block w-full text-left px-4 py-2 text-sm text-white hover:bg-gray-700"
+								class="block w-full text-left px-4 py-3 text-sm text-white hover:bg-gray-700 transition-colors"
 								role="menuitem"
 							>
 								Wednesday
 							</button>
 							<button
 								onclick="showDistrictXDay('thursday'); updateDistrictXMobileDayText('Thursday');"
-								class="block w-full text-left px-4 py-2 text-sm text-white hover:bg-gray-700"
+								class="block w-full text-left px-4 py-3 text-sm text-white hover:bg-gray-700 transition-colors"
 								role="menuitem"
 							>
 								Thursday
 							</button>
 							<button
 								onclick="showDistrictXDay('friday'); updateDistrictXMobileDayText('Friday');"
-								class="block w-full text-left px-4 py-2 text-sm text-white hover:bg-gray-700"
+								class="block w-full text-left px-4 py-3 text-sm text-white hover:bg-gray-700 transition-colors"
 								role="menuitem"
 							>
 								Friday
 							</button>
 							<button
 								onclick="showDistrictXDay('saturday'); updateDistrictXMobileDayText('Saturday');"
-								class="block w-full text-left px-4 py-2 text-sm text-white hover:bg-gray-700"
+								class="block w-full text-left px-4 py-3 text-sm text-white hover:bg-gray-700 transition-colors"
 								role="menuitem"
 							>
 								Saturday
 							</button>
 							<button
 								onclick="showDistrictXDay('sunday'); updateDistrictXMobileDayText('Sunday');"
-								class="block w-full text-left px-4 py-2 text-sm text-white hover:bg-gray-700"
+								class="block w-full text-left px-4 py-3 text-sm text-white hover:bg-gray-700 transition-colors"
 								role="menuitem"
 							>
 								Sunday
@@ -775,7 +725,7 @@
 		<!-- End Overlay Management UI -->
 
 		<div id="timetableCaptureArea" class="timetable-capture-area">
-    		<!-- The generated table will go here temporarily -->
+			<!-- The generated table will go here temporarily during rendering -->
 		</div>
 
 		<!-- Map Modal Popup -->
@@ -872,6 +822,7 @@
 						<option value="quiet">Quiet</option>
 						<option value="plus">Plus</option>
 						<option value="ready_to_rock">Ready To Rock</option>
+						<option value="mini_moshers">Mini Moshers</option>
 						<option value="campervan">Camervan</option>
 						<option value="campervan_plus">Camervan Plus</option>
 					</select>
@@ -892,6 +843,24 @@
 	</footer>
 
 	<script>
+		// Create floating particles
+		function createParticles() {
+			const particlesContainer = document.getElementById("particles");
+			for (let i = 0; i < 20; i++) {
+				const particle = document.createElement("div");
+				particle.className = "particle";
+				particle.style.left = Math.random() * 100 + "%";
+				particle.style.animationDelay = Math.random() * 8 + "s";
+				particle.style.animationDuration = 8 + Math.random() * 4 + "s";
+				particlesContainer.appendChild(particle);
+			}
+		}
+
+		// Initialize particles when page loads
+		document.addEventListener("DOMContentLoaded", function () {
+			createParticles();
+		});
+
 		// Improved zoom on hover for map image
 		const mapImg = document.getElementById("map-image");
 		const zoomContainer = document.getElementById("map-zoom-container");

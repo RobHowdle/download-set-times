@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Vendor Data Debug</title>
+		<style>
+			body {
+				font-family: system-ui, sans-serif;
+				line-height: 1.5;
+				padding: 2rem;
+			}
+			pre {
+				background: #f5f5f5;
+				padding: 1rem;
+				border-radius: 5px;
+				overflow-x: auto;
+			}
+			.success {
+				color: green;
+			}
+			.error {
+				color: red;
+			}
+			.info {
+				color: blue;
+			}
+			button {
+				padding: 0.5rem 1rem;
+				margin: 0.5rem;
+			}
+		</style>
+	</head>
+	<body>
+		<h1>Vendor Data Debugging</h1>
+
+		<div>
+			<button id="loadData">Load Vendor Data</button>
+			<button id="checkArena">Check Arena Vendors</button>
+			<button id="checkFood">Check Food Vendors</button>
+		</div>
+
+		<div id="output">
+			<p>Click a button to start debugging</p>
+		</div>
+
+		<script>
+			const output = document.getElementById("output");
+			let vendorData = null;
+
+			function log(message, type = "") {
+				const p = document.createElement("p");
+				p.className = type;
+				p.textContent = message;
+				output.appendChild(p);
+			}
+
+			function logJson(obj) {
+				const pre = document.createElement("pre");
+				pre.textContent = JSON.stringify(obj, null, 2);
+				output.appendChild(pre);
+			}
+
+			document
+				.getElementById("loadData")
+				.addEventListener("click", async () => {
+					output.innerHTML = "<p>Loading data...</p>";
+
+					try {
+						const response = await fetch("vendors-data.json");
+						if (!response.ok) {
+							throw new Error(
+								`HTTP error! Status: ${response.status}`
+							);
+						}
+
+						const text = await response.text();
+						log(
+							`Loaded ${text.length} characters of JSON data`,
+							"success"
+						);
+
+						vendorData = JSON.parse(text);
+						log(`Successfully parsed JSON data`, "success");
+
+						// Verify structure
+						if (!vendorData.zones) {
+							log(`Missing "zones" property in data!`, "error");
+						} else if (!Array.isArray(vendorData.zones)) {
+							log(
+								`"zones" is not an array! It's a ${typeof vendorData.zones}`,
+								"error"
+							);
+						} else {
+							log(
+								`Found ${vendorData.zones.length} items in the zones array`,
+								"success"
+							);
+
+							// Check first item
+							const first = vendorData.zones[0];
+							log("First vendor data:");
+							logJson(first);
+						}
+					} catch (error) {
+						log(`Error: ${error.message}`, "error");
+					}
+				});
+
+			document
+				.getElementById("checkArena")
+				.addEventListener("click", () => {
+					if (!vendorData) {
+						log("Please load the data first!", "error");
+						return;
+					}
+
+					output.innerHTML = "<p>Checking Arena vendors...</p>";
+
+					try {
+						const arenaVendors = vendorData.zones.filter(
+							(vendor) =>
+								Array.isArray(vendor.location) &&
+								vendor.location.some(
+									(loc) =>
+										loc &&
+										loc.toLowerCase().includes("arena")
+								)
+						);
+
+						log(
+							`Found ${arenaVendors.length} vendors in Arena`,
+							"info"
+						);
+
+						// Show the first few
+						arenaVendors.slice(0, 5).forEach((vendor, i) => {
+							log(`Arena vendor ${i + 1}: ${vendor.name}`);
+							log(
+								`  Location: ${JSON.stringify(vendor.location)}`
+							);
+							log(`  Tags: ${JSON.stringify(vendor.tags)}`);
+						});
+					} catch (error) {
+						log(`Error: ${error.message}`, "error");
+					}
+				});
+
+			document
+				.getElementById("checkFood")
+				.addEventListener("click", () => {
+					if (!vendorData) {
+						log("Please load the data first!", "error");
+						return;
+					}
+
+					output.innerHTML =
+						"<p>Checking Food vendors in Arena...</p>";
+
+					try {
+						const foodArenaVendors = vendorData.zones.filter(
+							(vendor) =>
+								Array.isArray(vendor.location) &&
+								vendor.location.some(
+									(loc) =>
+										loc &&
+										loc.toLowerCase().includes("arena")
+								) &&
+								Array.isArray(vendor.tags) &&
+								vendor.tags.includes("Food")
+						);
+
+						log(
+							`Found ${foodArenaVendors.length} Food vendors in Arena`,
+							"info"
+						);
+
+						// Show the first few
+						foodArenaVendors.slice(0, 5).forEach((vendor, i) => {
+							log(`Food vendor ${i + 1}: ${vendor.name}`);
+							log(
+								`  Location: ${JSON.stringify(vendor.location)}`
+							);
+							log(`  Tags: ${JSON.stringify(vendor.tags)}`);
+						});
+					} catch (error) {
+						log(`Error: ${error.message}`, "error");
+					}
+				});
+		</script>
+	</body>
+</html>
