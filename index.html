@@ -1050,7 +1050,17 @@
 		document.addEventListener("openFavoritesModal", function () {
 			const favModal = document.getElementById("favorites-modal");
 			if (favModal) {
-				favModal.classList.remove("hidden");
+				// Use the patched modal renderer for full content and events
+				if (typeof window.showFavoritesModalPatched === "function") {
+					window.showFavoritesModalPatched();
+				} else if (typeof window.showFavoritesModal === "function") {
+					window.showFavoritesModal();
+				} else {
+					favModal.classList.remove("hidden");
+					console.warn(
+						"No function found to render or load favorite artists."
+					);
+				}
 			}
 		});
 
