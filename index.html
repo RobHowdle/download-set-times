@@ -1087,7 +1087,6 @@
 			const currentPage =
 				currentPath.substring(currentPath.lastIndexOf("/") + 1) ||
 				"index.html";
-			console.log("Current page:", currentPage);
 
 			// Find and set the active class on the matching menu item
 			const menuItems = document.querySelectorAll(
@@ -1105,7 +1104,6 @@
 						(currentPage === "" && href === "index.html") ||
 						(currentPage === "/" && href === "index.html")
 					) {
-						console.log("Setting active on:", item);
 						item.classList.add("active");
 					}
 				}

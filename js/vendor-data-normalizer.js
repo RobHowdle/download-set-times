@@ -44,11 +44,8 @@ document.addEventListener("DOMContentLoaded", function () {
 					zones: data.zones.map(normalizeVendor),
 				};
 
-				console.log("Vendor data normalized successfully");
-
 				// Count vendors by location and type for debugging
 				const stats = getVendorStats(normalizedData.zones);
-				console.log("Vendor stats:", stats);
 
 				return normalizedData;
 			})
