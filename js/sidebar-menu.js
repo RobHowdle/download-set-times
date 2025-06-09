@@ -2,8 +2,6 @@
 // This script should be loaded after the sidebar-menu.html is inserted into the DOM.
 
 export function initSidebarMenu() {
-	console.log("[Sidebar] sidebar-menu.js loaded");
-
 	// Get current page filename
 	const currentPath = window.location.pathname;
 	const currentPage =
@@ -63,7 +61,6 @@ export function initSidebarMenu() {
 		const wallpaperBtn = document.getElementById("menu-timetable-generate");
 		if (wallpaperBtn) {
 			wallpaperBtn.addEventListener("click", function (e) {
-				console.log("[Sidebar] Wallpaper Generator button clicked");
 				autoCloseSidebar();
 				document.dispatchEvent(new CustomEvent("generateWallpaper"));
 			});
@@ -73,7 +70,6 @@ export function initSidebarMenu() {
 		const posterBtn = document.getElementById("menu-poster-generate");
 		if (posterBtn) {
 			posterBtn.addEventListener("click", function (e) {
-				console.log("[Sidebar] Poster Generator button clicked");
 				autoCloseSidebar();
 				document.dispatchEvent(new CustomEvent("generatePoster"));
 			});
@@ -83,7 +79,6 @@ export function initSidebarMenu() {
 		const favoritesBtn = document.getElementById("menu-favorites");
 		if (favoritesBtn) {
 			favoritesBtn.addEventListener("click", function () {
-				console.log("[Sidebar] My Artists button clicked");
 				autoCloseSidebar();
 				document.dispatchEvent(new CustomEvent("openFavoritesModal"));
 			});
