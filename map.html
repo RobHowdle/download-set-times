@@ -197,6 +197,7 @@
 						<option value="campervan_plus">Campervan Plus</option>
 						<option value="ready_to_rock">Ready to Rock</option>
 						<option value="mini_moshers">Mini Moshers</option>
+						<option value="arena">Arena Only (No Camping)</option>
 					</select>
 				</div>
 			</div>
@@ -230,6 +231,15 @@
 								title="Reset Zoom"
 							>
 								⌂
+							</button>
+							<button
+								class="zoom-btn"
+								onclick="togglePolygonVisibility()"
+								title="Toggle Polygons"
+							>
+								<svg fill="currentColor" width="18" height="18" viewBox="0 0 256 256" id="Flat" xmlns="http://www.w3.org/2000/svg">
+      								<path d="M227.8,52.2a28,28,0,0,0-39.6,0h0a28,28,0,0,0-5.88,8.65l-34.55-9.42A28,28,0,0,0,100.2,28.2h0a28,28,0,0,0-3.47,35.36L57.92,98.49A28,28,0,0,0,20.2,100.2h0a28,28,0,0,0,39.6,39.6l.18-.19,75.31,55.23A28,28,0,1,0,173,183.2l29.55-83.75A28,28,0,0,0,227.8,91.8,28,28,0,0,0,227.8,52.2ZM105.86,33.86h0a20,20,0,1,1,0,28.28A20,20,0,0,1,105.86,33.86Zm-80,100.28a20,20,0,0,1,0-28.28h0a20,20,0,1,1,0,28.28Zm148.28,88a20,20,0,0,1-28.28-28.28h0a20,20,0,0,1,28.28,28.28Zm-8.69-41.59a28,28,0,0,0-25.25,7.65h0l-.18.19L64.71,133.16a28.06,28.06,0,0,0-1.44-28.72l38.81-34.93a28,28,0,0,0,43.6-10.36l34.55,9.42A28,28,0,0,0,195,96.8Zm56.69-94.41a20,20,0,0,1-28.28-28.28h0a20,20,0,0,1,28.28,28.28Z"/>
+    							</svg>
 							</button>
 						</div>
 
@@ -332,6 +342,13 @@
 									style="background-color: #f472b6"
 								></div>
 								<span>Mini Moshers</span>
+							</div>
+							<div class="legend-item">
+								<div
+									class="legend-color"
+									style="background-color: #a3e635"
+								></div>
+								<span>Arena Only (Day Access, No Camping)</span>
 							</div>
 						</div>
 
@@ -564,6 +581,43 @@
 						{x: 904, y: 1102},
 					],
 				],
+				arena: [
+					[
+						{x: 2342, y: 1934},
+  						{x: 2354, y: 1930},
+  						{x: 2352, y: 1839},
+ 						{x: 2478, y: 1832},
+  						{x: 2479, y: 1726},
+  						{x: 2530, y: 1692},
+  						{x: 2596, y: 1721},
+  						{x: 2608, y: 1712},
+  						{x: 2657, y: 1712},
+  						{x: 2657, y: 1776},
+  						{x: 2929, y: 1784},
+  						{x: 2932, y: 1943},
+  						{x: 2998, y: 1947},
+  						{x: 3062, y: 2039},
+  						{x: 3052, y: 2048},
+  						{x: 2797, y: 2140},
+  						{x: 2698, y: 2197},
+  						{x: 2615, y: 2265},
+  						{x: 2316, y: 2268},
+  						{x: 2240, y: 2246},
+					],
+					[
+						{x: 1817, y: 1732},
+  						{x: 1814, y: 1653},
+  						{x: 1735, y: 1637},
+  						{x: 1753, y: 1609},
+  						{x: 1738, y: 1597},
+  						{x: 1669, y: 1667},
+  						{x: 1624, y: 1637},
+  						{x: 1511, y: 1647},
+  						{x: 1507, y: 1755},
+  						{x: 1541, y: 1760},
+  						{x: 1606, y: 1762},
+					],
+				],
 			};
 
 			// Map ticket types to allowed areas
@@ -578,6 +632,7 @@
 				campervan: ["campervan"],
 				campervan_plus: ["campervan_plus"],
 				mini_moshers: ["mini_moshers"],
+				arena: ["arena"],
 			};
 
 			let currentZoom = 1;
@@ -643,6 +698,8 @@
 						return "#a855f7";
 					case "ready_to_rock":
 						return "#ef4444";
+					case "arena":
+						return "#a3e635";
 					default:
 						return "#fff";
 				}
@@ -796,6 +853,13 @@
 				 and by DOMContentLoaded with setTimeout.
 				 So, we only need to call drawHighlights here.*/
 				drawHighlights();
+				mapCanvas.style.opacity = "0";
+				setTimeout(function (){
+					if (polygonsVisible){
+						mapCanvas.style.opacity = "1";
+						drawHighlights();
+					}
+				}, 400)
 			}
 
 			// Mouse drag functionality
@@ -991,7 +1055,7 @@
 				}
 			});
 
-			// Hide highlights when zooming (hovering)
+			/* Hide highlights when zooming (hovering)
 			if (mapImage && mapCanvas) {
 				mapImage.addEventListener("mouseenter", () => {
 					mapCanvas.style.opacity = "0";
@@ -1000,6 +1064,18 @@
 					mapCanvas.style.opacity = "1";
 					drawHighlights();
 				});
+			} */
+
+			let polygonsVisible = true;
+
+			function togglePolygonVisibility() {
+				polygonsVisible = !polygonsVisible;
+				if (mapCanvas) {
+					mapCanvas.style.opacity = polygonsVisible ? "1" : "0";
+					if(polygonsVisible){
+						drawHighlights();
+					}
+				}
 			}
 
 			// Redraw on ticket change
