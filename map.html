@@ -197,6 +197,7 @@
 						<option value="campervan_plus">Campervan Plus</option>
 						<option value="ready_to_rock">Ready to Rock</option>
 						<option value="mini_moshers">Mini Moshers</option>
+						<option value="arena">Arena Only (No Camping)</option>
 					</select>
 				</div>
 			</div>
@@ -341,6 +342,13 @@
 									style="background-color: #f472b6"
 								></div>
 								<span>Mini Moshers</span>
+							</div>
+							<div class="legend-item">
+								<div
+									class="legend-color"
+									style="background-color: #a3e635"
+								></div>
+								<span>Arena Only (Day Access, No Camping)</span>
 							</div>
 						</div>
 
@@ -573,6 +581,43 @@
 						{x: 904, y: 1102},
 					],
 				],
+				arena: [
+					[
+						{x: 2342, y: 1934},
+  						{x: 2354, y: 1930},
+  						{x: 2352, y: 1839},
+ 						{x: 2478, y: 1832},
+  						{x: 2479, y: 1726},
+  						{x: 2530, y: 1692},
+  						{x: 2596, y: 1721},
+  						{x: 2608, y: 1712},
+  						{x: 2657, y: 1712},
+  						{x: 2657, y: 1776},
+  						{x: 2929, y: 1784},
+  						{x: 2932, y: 1943},
+  						{x: 2998, y: 1947},
+  						{x: 3062, y: 2039},
+  						{x: 3052, y: 2048},
+  						{x: 2797, y: 2140},
+  						{x: 2698, y: 2197},
+  						{x: 2615, y: 2265},
+  						{x: 2316, y: 2268},
+  						{x: 2240, y: 2246},
+					],
+					[
+						{x: 1817, y: 1732},
+  						{x: 1814, y: 1653},
+  						{x: 1735, y: 1637},
+  						{x: 1753, y: 1609},
+  						{x: 1738, y: 1597},
+  						{x: 1669, y: 1667},
+  						{x: 1624, y: 1637},
+  						{x: 1511, y: 1647},
+  						{x: 1507, y: 1755},
+  						{x: 1541, y: 1760},
+  						{x: 1606, y: 1762},
+					],
+				],
 			};
 
 			// Map ticket types to allowed areas
@@ -587,6 +632,7 @@
 				campervan: ["campervan"],
 				campervan_plus: ["campervan_plus"],
 				mini_moshers: ["mini_moshers"],
+				arena: ["arena"],
 			};
 
 			let currentZoom = 1;
@@ -652,6 +698,8 @@
 						return "#a855f7";
 					case "ready_to_rock":
 						return "#ef4444";
+					case "arena":
+						return "#a3e635";
 					default:
 						return "#fff";
 				}
